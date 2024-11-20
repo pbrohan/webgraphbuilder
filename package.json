@@ -1,0 +1,24 @@
+{
+  "name": "webgraphbuilder",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "eleventy",
+    "serve": "eleventy --serve",
+    "watch:sass": "npx sass src/sass:src/stylesheets --watch",
+    "build:css": "npx sass src/sass:src/stylesheets"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@11ty/eleventy": "^3.0.0"
+  },
+  "dependencies": {
+    "govuk-frontend": "^5.7.1",
+    "plotly.js-dist": "^2.35.2",
+    "sass": "^1.81.0"
+  }
+}
