@@ -13,38 +13,34 @@ Here is a table:
 <script>
     const Grid = tui.Grid;
     const instance = new Grid({
+  usageStatistics: false, // Don't use google analytics
   el: document.getElementById('grid'), // Container element
+  scrollX : false,
+  scrollY : false,
   columns: [
     {
-      header: 'Name',
-      name: 'name'
+      header: 'Ecode',
+      name: 'ecode',
+      editor: 'text',
     },
     {
-      header: 'Artist',
-      name: 'artist'
+      header: 'Data',
+      name: 'data',
+      editor: 'text',
     },
-    {
-      header: 'Release',
-      name: 'release'
-    },
-    {
-      header: 'Genre',
-      name: 'genre'
-    }
   ],
   data: [
     {
-      name: 'Beautiful Lies',
-      artist: 'Birdy',
-      release: '2016.03.26',
-      genre: 'Pop'
+      ecode: 'E000001',
+      data: '7',
     }
   ]
 });
 
-instance.resetData(newData); // Call API of instance's public method
 
 Grid.applyTheme('striped'); // Call API of static method
+console.log("beep");
+instance.on('click', function() {console.log(instance.getData());});
 </script>
 
 That was my table

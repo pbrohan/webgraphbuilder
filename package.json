@@ -3,18 +3,29 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "build": "eleventy",
     "serve": "eleventy --serve",
     "watch:sass": "npx sass src/sass:src/stylesheets --watch",
     "build:css": "npx sass src/sass:src/stylesheets"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "moduleFileExtensions": ["js", "json"],
+    "testMatch": ["**/__test__/**/*.js", "**/?(.*)+(spec|test).js"],
+    "verbose": true
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@11ty/eleventy": "^3.0.0"
+    "@11ty/eleventy": "^3.0.0",
+    "jest": "^29.7.0"
   },
   "dependencies": {
     "govuk-frontend": "^5.7.1",
