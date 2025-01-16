@@ -8,9 +8,139 @@ Here is a table:
 <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 
-<div id="grid"></div>
 
-<script>
+{% from "govuk/components/accordion/macro.njk" import govukAccordion %}
+<details>
+  <summary>Show table</summary>
+ <div id = 'grid'></div>
+</details>
+
+Here is a map
+<div id = 'map'></div>
+
+<script type = "module">
+  import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+  // Declare the chart dimensions and margins.
+const width = 640;
+const height = 400;
+const marginTop = 20;
+const marginRight = 20;
+const marginBottom = 30;
+const marginLeft = 40;
+
+const container = document.getElementById('map');
+
+
+// Map and projection
+var projection = d3.geoMercator()
+  .scale(1300)
+  .center([0, 54]);
+var path = d3.geoPath().projection(projection);
+
+
+function draw_graph(data) {
+  // Create the SVG container.
+  const svg = d3.create("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+  var ecodes = [];
+  for (let d in data) {
+    ecodes.push(data[d].ecode );
+  }
+
+  // temporary easy scale
+  console.log(get_table_range(data))
+
+  var linearscale = d3.scaleSequential(get_table_range(data), d3.interpolateBlues)
+
+  d3.json("/assets/maps/LAD_2024.geojson").then(
+    (map) => {
+      // Filter features to include only those with finite bounding boxes
+      var validFeatures = map.features.filter((feature) => {
+        var truth = in_bounds(feature);
+        return in_bounds(feature)
+      });
+
+    var join_errors = [];
+
+      // left join the map with the data
+      // (this seems to do a lot of reads....)
+      // Create a lookup table for data by ecode
+      const dataLookup = Object.fromEntries(
+        data.map(line => [
+            line.ecode.trim(), // Trim the `ecode` key if necessary
+            Object.fromEntries(
+                Object.entries(line).map(([key, value]) => 
+                    typeof value === 'string' ? [key, value.trim()] : [key, value]
+                )
+            )
+        ])
+      );
+
+      // Map over validFeatures and enrich them with data if a match is found
+      validFeatures = validFeatures.flatMap(feature => {
+        const matchedData = dataLookup[feature.properties.LAD24CD];
+        if (matchedData) {
+            // Return the feature with the matched data
+            return { ...feature, data: { ...matchedData } };
+        } else {
+            // Return the feature as is
+            return feature;
+        }
+      });
+      // Draw the map
+      svg.append("g")
+        .selectAll("path")
+        .data(validFeatures)
+        .enter().append("path")
+          .attr("d", path)        
+          .style("stroke", "#000") // Black stroke for visibility
+          .style("fill", function(d) {
+            if ('data' in d) {
+              console.log(linearscale(d.data.data))
+              return linearscale(d.data.data)
+            } else {
+              return "none"
+            }
+              
+            }); 
+});
+
+function get_table_range(data) {
+  var min = 0, max = 0;
+  for (let d in data) {
+    if (data[d].data < min) {
+      min = data[d].data;
+    }
+    if (data[d].data > max) {
+      max = data[d].data;
+    }
+  }
+  return [min, max]
+}
+
+// Append the SVG element.
+container.innerHTML = "";
+container.append(svg.node());
+}
+
+// Check if a feature is in bounds (this is the source of much jank and points
+// to a more fundamental problem with the geojson files that I should fix later)
+function in_bounds(feature) {
+  var bounds = path.bounds(feature)
+  if (bounds[0][0] < 0 | bounds[0][1] < 0) {
+    return false
+  }
+  if (bounds[1][0] > 640 | bounds[1][1] > 480) {
+    return false
+  }
+  if (!(bounds.every((point) => point.every((coordinate) => isFinite(coordinate))))) {
+    return false
+  }
+  return true
+}
+
     const Grid = tui.Grid;
     const instance = new Grid({
   usageStatistics: false, // Don't use google analytics
@@ -31,7 +161,7 @@ Here is a table:
   ],
   data: [
     {
-      ecode: 'E000001',
+      ecode: 'E06000001',
       data: '7',
     }
   ]
@@ -39,8 +169,5 @@ Here is a table:
 
 
 Grid.applyTheme('striped'); // Call API of static method
-console.log("beep");
-instance.on('click', function() {console.log(instance.getData());});
+instance.on('afterChange', function() {draw_graph(instance.getData());});
 </script>
-
-That was my table
