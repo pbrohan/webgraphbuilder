@@ -3,13 +3,20 @@ layout: govuk.njk
 servicetitle: Peter's Graph Builder
 pagetitle: Home Page
 ---
+<!--link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" /-->
 
-Here is a table:
-<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
-<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+<h3> Instructions </h3>
+<p>Click "Show table" to show the input table. Paste your data into the table. Your
+data should consist of one column which is Ecodes (I will write a better explanation
+later) and one column of values for those Ecodes. The table will automatically 
+expand to accommodate the number of rows you have.</p>
 
+<p>The page will then generate a map of the UK with each LA you have entered a 
+  valid ecode for coloured in according to the number you have written in the 
+  second column. Currently all other behaviours are unsupported and there are 
+  probably many bugs.
+</p>
 
-{% from "govuk/components/accordion/macro.njk" import govukAccordion %}
 <details>
   <summary>Show table</summary>
  <div id = 'grid'></div>
@@ -19,7 +26,7 @@ Here is a map
 <div id = 'map'></div>
 
 <script type = "module">
-  import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+  import {d3, Grid, initAll} from '/bundle.js';
   // Declare the chart dimensions and margins.
 const width = 640;
 const height = 400;
@@ -36,6 +43,30 @@ var projection = d3.geoMercator()
   .scale(1300)
   .center([0, 54]);
 var path = d3.geoPath().projection(projection);
+const instance = new Grid({
+    usageStatistics: false, // Don't use google analytics
+    el: document.getElementById('grid'), // Container element
+    scrollX : false,
+    scrollY : false,
+    columns: [
+      {
+        header: 'Ecode',
+        name: 'ecode',
+        editor: 'text',
+      },
+      {
+        header: 'Data',
+        name: 'data',
+        editor: 'text',
+      },
+    ],
+    data: [
+      {
+        ecode: 'E06000001',
+        data: '7',
+      }
+    ]
+  });
 
 
 function draw_graph(data) {
@@ -49,8 +80,20 @@ function draw_graph(data) {
     ecodes.push(data[d].ecode );
   }
 
+  // Create a lookup table for data by ecode
+  const dataLookup = Object.fromEntries(
+    data.map(line => [
+        line.ecode.trim(), // Trim the `ecode` key if necessary
+        Object.fromEntries(
+            Object.entries(line).map(([key, value]) => 
+                typeof value === 'string' ? [key, value.trim()] : [key, value]
+            )
+        )
+    ])
+  );
+
   // temporary easy scale
-  console.log(get_table_range(data))
+  console.log(get_table_range(dataLookup))
 
   var linearscale = d3.scaleSequential(get_table_range(data), d3.interpolateBlues)
 
@@ -66,17 +109,7 @@ function draw_graph(data) {
 
       // left join the map with the data
       // (this seems to do a lot of reads....)
-      // Create a lookup table for data by ecode
-      const dataLookup = Object.fromEntries(
-        data.map(line => [
-            line.ecode.trim(), // Trim the `ecode` key if necessary
-            Object.fromEntries(
-                Object.entries(line).map(([key, value]) => 
-                    typeof value === 'string' ? [key, value.trim()] : [key, value]
-                )
-            )
-        ])
-      );
+
 
       // Map over validFeatures and enrich them with data if a match is found
       validFeatures = validFeatures.flatMap(feature => {
@@ -98,7 +131,6 @@ function draw_graph(data) {
           .style("stroke", "#000") // Black stroke for visibility
           .style("fill", function(d) {
             if ('data' in d) {
-              console.log(linearscale(d.data.data))
               return linearscale(d.data.data)
             } else {
               return "none"
@@ -110,11 +142,12 @@ function draw_graph(data) {
 function get_table_range(data) {
   var min = 0, max = 0;
   for (let d in data) {
-    if (data[d].data < min) {
-      min = data[d].data;
+    let val = parseFloat(data[d].data)
+    if (val < min) {
+      min = val;
     }
-    if (data[d].data > max) {
-      max = data[d].data;
+    if (val > max) {
+      max = val;
     }
   }
   return [min, max]
@@ -141,33 +174,10 @@ function in_bounds(feature) {
   return true
 }
 
-    const Grid = tui.Grid;
-    const instance = new Grid({
-  usageStatistics: false, // Don't use google analytics
-  el: document.getElementById('grid'), // Container element
-  scrollX : false,
-  scrollY : false,
-  columns: [
-    {
-      header: 'Ecode',
-      name: 'ecode',
-      editor: 'text',
-    },
-    {
-      header: 'Data',
-      name: 'data',
-      editor: 'text',
-    },
-  ],
-  data: [
-    {
-      ecode: 'E06000001',
-      data: '7',
-    }
-  ]
-});
 
 
-Grid.applyTheme('striped'); // Call API of static method
+
+
+// Grid.applyTheme('striped'); // Call API of static method
 instance.on('afterChange', function() {draw_graph(instance.getData());});
 </script>

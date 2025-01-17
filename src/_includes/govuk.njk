@@ -1,7 +1,15 @@
 {% extends "govuk/template.njk" %}
 
+{% block pageTitle %}
+Peter's Graph Builder
+{% endblock %}
+
 {% block head %}
   <link rel="stylesheet" href="/stylesheets/main.css">
+  <script type="module">
+    import {d3, Grid, initAll} from '/bundle.js';
+    window.initAll = initAll; 
+  </script>
 {% endblock %}
 
 {% block header %}
@@ -24,9 +32,7 @@
 
 {% block bodyEnd %}
   {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
-  <script type="module" src="/javascripts/govuk-frontend.min.js"></script>
-  <script type="module">
-    import { initAll } from '/javascripts/govuk-frontend.min.js'
+  <script type = "module">
     initAll()
   </script>
-{% endblock %}
+{% endblock %}  
