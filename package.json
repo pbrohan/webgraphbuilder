@@ -19,10 +19,6 @@
       "js",
       "json"
     ],
-    "testMatch": [
-      "**/__test__/**/*.js",
-      "**/?(.*)+(spec|test).js"
-    ],
     "verbose": true
   },
   "keywords": [],

@@ -22,11 +22,33 @@ expand to accommodate the number of rows you have.</p>
  <div id = 'grid'></div>
 </details>
 
+Here is a drop-down menu
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+
+{{ govukSelect({
+  id: "map_type",
+  name: "map_type",
+  label: {
+    text: "LA Level"
+  },
+  items: [
+    {
+      value: "county",
+      text: "County",
+      selected: true
+    },
+    {
+      value: "district",
+      text: "District"
+    }
+  ]
+}) }}
+
 Here is a map
 <div id = 'map'></div>
 
 <script type = "module">
-  import {d3, Grid, initAll} from '/bundle.js';
+  import {d3, Grid, initAll, data_check } from '/bundle.js';
   // Declare the chart dimensions and margins.
 const width = 640;
 const height = 400;
@@ -92,12 +114,27 @@ function draw_graph(data) {
     ])
   );
 
+  console.log(dataLookup)
+
+  // check and see what kind of data we're looking at
+  const data_level = data_check.data_check.guess_region_type(dataLookup);
+
+  console.log(data_level);
+
+  // BAD HARDCODED VALUES
+  const data_loc = data_level == 'la' ? "/assets/maps/LAD_2024.geojson" : "/assets/maps/CTY_2023.geojson";
+  if (data_level == 'la') {
+    console.log("boop")
+    document.getElementById("map_type").value = "district";
+  }
+  
+  console.log(data_loc);
   // temporary easy scale
   console.log(get_table_range(dataLookup))
 
   var linearscale = d3.scaleSequential(get_table_range(data), d3.interpolateBlues)
 
-  d3.json("/assets/maps/LAD_2024.geojson").then(
+  d3.json(data_loc).then(
     (map) => {
       // Filter features to include only those with finite bounding boxes
       var validFeatures = map.features.filter((feature) => {
