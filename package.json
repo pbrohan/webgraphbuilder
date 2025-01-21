@@ -21,6 +21,7 @@
     ],
     "verbose": true
   },
+  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",

@@ -1,6 +1,6 @@
-const nunjucks = require("nunjucks");
+import nunjucks from "nunjucks";
 
-module.exports = function (eleventyConfig) {
+export default function (eleventyConfig) {
     // Set up a custom Nunjucks environment
      const env = new nunjucks.Environment(
         new nunjucks.FileSystemLoader([
