@@ -3,3 +3,11 @@
 );
 
 @import url("https://uicdn.toast.com/grid/latest/tui-grid.css");
+
+#settings-pane {
+    display : flex
+}
+
+#settings-pane > div {
+    padding-right: 2em
+}

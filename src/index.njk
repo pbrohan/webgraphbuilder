@@ -4,7 +4,8 @@ servicetitle: Peter's Graph Builder
 pagetitle: Home Page
 ---
 <!--link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" /-->
-
+    {% from "govuk/components/select/macro.njk" import govukSelect %}
+    {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 <h3> Instructions </h3>
 <p>Click "Show table" to show the input table. Paste your data into the table. Your
 data should consist of one column which is Ecodes (I will write a better explanation
@@ -22,37 +23,80 @@ expand to accommodate the number of rows you have.</p>
  <div id = 'grid'></div>
 </details>
 
-Here is a drop-down menu
-{% from "govuk/components/select/macro.njk" import govukSelect %}
+<div id = 'settings-pane' style = "display:flex">
+  <div id = 'level-menu'>
 
-{{ govukSelect({
-  id: "map_type",
-  name: "map_type",
-  label: {
-    text: "LA Level"
-  },
+
+    {{ govukSelect({
+      id: "map_type",
+      name: "map_type",
+      label: {
+        text: "LA Level"
+      },
+      items: [
+        {
+          value: "county",
+          text: "County",
+          selected: true
+        },
+        {
+          value: "district",
+          text: "District"
+        }
+      ]
+    }) }}
+  </div>
+  <div id = 'year-menu'>
+        {{ govukSelect({
+      id: "map_year",
+      name: "map_year",
+      label: {
+        text: "Data Financial Year"
+      },
+      items: [
+        {
+          value: "2023",
+          text: "2023/24",
+          selected: true
+        },
+        {
+          value: "2022",
+          text: "2023/23"
+        }
+      ]
+    }) }}
+    </div>
+    <div id = 'inset-checkbox'>
+      Here is a checkbox
+      {{ govukCheckboxes({
+  name: "london-inset",
   items: [
     {
-      value: "county",
-      text: "County",
-      selected: true
-    },
-    {
-      value: "district",
-      text: "District"
+      value: "use_inset",
+      text: "Include London inset"
     }
   ]
 }) }}
+    </div>
+</div>
 
 Here is a map
 <div id = 'map'></div>
 
+
+
+
 <script type = "module">
   import {d3, Grid, initAll, data_check } from '/bundle.js';
   // Declare the chart dimensions and margins.
-const width = 640;
-const height = 400;
-const marginTop = 20;
+
+  // map ratio is 277.61 x 424.52
+const w = 266.61*1.2;
+const h = 424.52*1.2;
+
+const width = w + 20;
+const height = h + 20;
+const marginTop = 200;
 const marginRight = 20;
 const marginBottom = 30;
 const marginLeft = 40;
@@ -62,8 +106,8 @@ const container = document.getElementById('map');
 
 // Map and projection
 var projection = d3.geoMercator()
-  .scale(1300)
-  .center([0, 54]);
+  .center([9, 54])
+  .scale(1700);
 var path = d3.geoPath().projection(projection);
 const instance = new Grid({
     usageStatistics: false, // Don't use google analytics
@@ -202,7 +246,7 @@ function in_bounds(feature) {
   if (bounds[0][0] < 0 | bounds[0][1] < 0) {
     return false
   }
-  if (bounds[1][0] > 640 | bounds[1][1] > 480) {
+  if (bounds[1][0] > 1024 | bounds[1][1] > 1024) {
     return false
   }
   if (!(bounds.every((point) => point.every((coordinate) => isFinite(coordinate))))) {
