@@ -28,8 +28,8 @@ expand to accommodate the number of rows you have.</p>
 
 
     {{ govukSelect({
-      id: "map_type",
-      name: "map_type",
+      id: "map-type",
+      name: "map-type",
       label: {
         text: "LA Level"
       },
@@ -48,8 +48,8 @@ expand to accommodate the number of rows you have.</p>
   </div>
   <div id = 'year-menu'>
         {{ govukSelect({
-      id: "map_year",
-      name: "map_year",
+      id: "map-year",
+      name: "map-year",
       label: {
         text: "Data Financial Year"
       },
@@ -72,7 +72,7 @@ expand to accommodate the number of rows you have.</p>
   name: "london-inset",
   items: [
     {
-      value: "use_inset",
+      value: "use-inset",
       text: "Include London inset"
     }
   ]
@@ -87,178 +87,10 @@ Here is a map
 
 
 <script type = "module">
-  import {d3, Grid, initAll, data_check } from '/bundle.js';
-  // Declare the chart dimensions and margins.
+  import {initAll} from '/bundle.js';
+  initAll();
+  import('./javascripts/maps.js').then(module => {
+    module.initMapPage()
+  })
 
-  // map ratio is 277.61 x 424.52
-const w = 266.61*1.2;
-const h = 424.52*1.2;
-
-const width = w + 20;
-const height = h + 20;
-const marginTop = 200;
-const marginRight = 20;
-const marginBottom = 30;
-const marginLeft = 40;
-
-const container = document.getElementById('map');
-
-
-// Map and projection
-var projection = d3.geoMercator()
-  .center([9, 54])
-  .scale(1700);
-var path = d3.geoPath().projection(projection);
-const instance = new Grid({
-    usageStatistics: false, // Don't use google analytics
-    el: document.getElementById('grid'), // Container element
-    scrollX : false,
-    scrollY : false,
-    columns: [
-      {
-        header: 'Ecode',
-        name: 'ecode',
-        editor: 'text',
-      },
-      {
-        header: 'Data',
-        name: 'data',
-        editor: 'text',
-      },
-    ],
-    data: [
-      {
-        ecode: 'E06000001',
-        data: '7',
-      }
-    ]
-  });
-
-
-function draw_graph(data) {
-  // Create the SVG container.
-  const svg = d3.create("svg")
-    .attr("width", width)
-    .attr("height", height);
-
-  var ecodes = [];
-  for (let d in data) {
-    ecodes.push(data[d].ecode );
-  }
-
-  // Create a lookup table for data by ecode
-  const dataLookup = Object.fromEntries(
-    data.map(line => [
-        line.ecode.trim(), // Trim the `ecode` key if necessary
-        Object.fromEntries(
-            Object.entries(line).map(([key, value]) => 
-                typeof value === 'string' ? [key, value.trim()] : [key, value]
-            )
-        )
-    ])
-  );
-
-  console.log(dataLookup)
-
-  // check and see what kind of data we're looking at
-  const data_level = data_check.data_check.guess_region_type(dataLookup);
-
-  console.log(data_level);
-
-  // BAD HARDCODED VALUES
-  const data_loc = data_level == 'la' ? "/assets/maps/LAD_2024.geojson" : "/assets/maps/CTY_2023.geojson";
-  if (data_level == 'la') {
-    console.log("boop")
-    document.getElementById("map_type").value = "district";
-  }
-  
-  console.log(data_loc);
-  // temporary easy scale
-  console.log(get_table_range(dataLookup))
-
-  var linearscale = d3.scaleSequential(get_table_range(data), d3.interpolateBlues)
-
-  d3.json(data_loc).then(
-    (map) => {
-      // Filter features to include only those with finite bounding boxes
-      var validFeatures = map.features.filter((feature) => {
-        var truth = in_bounds(feature);
-        return in_bounds(feature)
-      });
-
-    var join_errors = [];
-
-      // left join the map with the data
-      // (this seems to do a lot of reads....)
-
-
-      // Map over validFeatures and enrich them with data if a match is found
-      validFeatures = validFeatures.flatMap(feature => {
-        const matchedData = dataLookup[feature.properties.LAD24CD];
-        if (matchedData) {
-            // Return the feature with the matched data
-            return { ...feature, data: { ...matchedData } };
-        } else {
-            // Return the feature as is
-            return feature;
-        }
-      });
-      // Draw the map
-      svg.append("g")
-        .selectAll("path")
-        .data(validFeatures)
-        .enter().append("path")
-          .attr("d", path)        
-          .style("stroke", "#000") // Black stroke for visibility
-          .style("fill", function(d) {
-            if ('data' in d) {
-              return linearscale(d.data.data)
-            } else {
-              return "none"
-            }
-              
-            }); 
-});
-
-function get_table_range(data) {
-  var min = 0, max = 0;
-  for (let d in data) {
-    let val = parseFloat(data[d].data)
-    if (val < min) {
-      min = val;
-    }
-    if (val > max) {
-      max = val;
-    }
-  }
-  return [min, max]
-}
-
-// Append the SVG element.
-container.innerHTML = "";
-container.append(svg.node());
-}
-
-// Check if a feature is in bounds (this is the source of much jank and points
-// to a more fundamental problem with the geojson files that I should fix later)
-function in_bounds(feature) {
-  var bounds = path.bounds(feature)
-  if (bounds[0][0] < 0 | bounds[0][1] < 0) {
-    return false
-  }
-  if (bounds[1][0] > 1024 | bounds[1][1] > 1024) {
-    return false
-  }
-  if (!(bounds.every((point) => point.every((coordinate) => isFinite(coordinate))))) {
-    return false
-  }
-  return true
-}
-
-
-
-
-
-// Grid.applyTheme('striped'); // Call API of static method
-instance.on('afterChange', function() {draw_graph(instance.getData());});
 </script>

@@ -18,7 +18,6 @@ class UnknownEcode extends EcodeParseError {
 }
 
 function guess_region_type(data) {
-    console.log(data)
     // This will need updating when there are more datasets
     var region_type = null;
     var both = false;
@@ -35,9 +34,8 @@ function guess_region_type(data) {
             }
         } else if (only_la.includes(datum.ecode)) {
             if (region_type == null) {
-                region_type = "la"; 
-            } else if (region_type != "la") {
-                //temp
+                region_type = "district"; 
+            } else if (region_type != "district") {
                 throw new EcodeParseError("Multiple types of LA", datum.ecode)
                 break;
             }
@@ -88,6 +86,4 @@ const data_check = {
     EcodeParseError
 }
 
-module.exports = {
-    data_check
-}
+export default data_check
