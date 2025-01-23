@@ -1,5 +1,4 @@
 node_modules/
 output/
 src/assets/*
-src/javascripts/*
 src/stylesheets/*

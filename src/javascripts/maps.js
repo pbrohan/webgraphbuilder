@@ -119,7 +119,11 @@ function draw_map(container, width, height, data, la_level, data_year, inset){
 
     svg.append("g")
         .attr("transform", `translate(${legend_offset[0]}, ${legend_offset[1]})`)
-        .append(() =>  graph_tools.VerticalLegend(linearscale, legend_settings));
+        .append(() =>  graph_tools.VerticalLegend(linearscale, legend_settings))
+        .call(g => g.selectAll(".tick text")
+                .style('font-size', "1rem")
+                .attr("color", "0b0c0c")
+                .attr("font-family", "arial"));
 
     // Append the SVG element.
     container.innerHTML = "";
@@ -355,4 +359,8 @@ export function initMapPage() {
             };
 
         });
+
+        document.getElementById("map-dl").addEventListener("click", () => {
+            console.log(document.querySelector('#map > svg'));
+            graph_tools.download_svg(document.querySelector('#map > svg'))})
 };

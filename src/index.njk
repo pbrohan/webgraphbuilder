@@ -6,6 +6,7 @@ pagetitle: Home Page
 <!--link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" /-->
     {% from "govuk/components/select/macro.njk" import govukSelect %}
     {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+    {% from "govuk/components/button/macro.njk" import govukButton %}
 <h3> Instructions </h3>
 <p>Click "Show table" to show the input table. Paste your data into the table. Your
 data should consist of one column which is Ecodes (I will write a better explanation
@@ -89,6 +90,12 @@ expand to accommodate the number of rows you have.</p>
     </div>
     </form>
   </div>
+
+{{ govukButton({
+  id: "map-dl",
+  text: "Download Graph",
+  preventDoubleClick: true
+}) }}
 
 <div id = 'map'></div>
 

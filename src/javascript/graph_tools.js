@@ -145,8 +145,55 @@ function VerticalLegend(colour,
 
     }
 
+function download_svg(element) {
+    console.log(element);
+    // Convert the element to a data URL
+    const svgData = new XMLSerializer().serializeToString(element);
+    const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+    const svgUrl = URL.createObjectURL(svgBlob);
+
+    const targetDPI = 300;
+    const inchtopx = 96;
+    const scaleFactor = targetDPI / inchtopx;
+
+    // Create an image element
+    const img = new Image();
+    img.onload = function () {
+      // Create a canvas element
+      const canvas = document.createElement("canvas");
+      canvas.width = element.width.baseVal.value * scaleFactor;
+      canvas.height = element.height.baseVal.value * scaleFactor;
+
+      // Draw the SVG image onto the canvas
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "white"; // Optional: Fill the background with white
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.scale(scaleFactor, scaleFactor)
+      ctx.drawImage(img, 0, 0);
+
+      // Convert the canvas content to a JPG data URL
+      const jpgUrl = canvas.toDataURL("image/jpeg", 1.0);
+
+      // Create a download link
+      const link = document.createElement("a");
+      link.href = jpgUrl;
+      link.download = "graph.jpg";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Revoke the object URL
+      URL.revokeObjectURL(svgUrl);
+    };
+
+    // Set the image source to the SVG URL
+    img.src = svgUrl;
+};
+
+
 const graph_tools = {
-    VerticalLegend
+    VerticalLegend,
+    download_svg
 };
 
 export default graph_tools;
