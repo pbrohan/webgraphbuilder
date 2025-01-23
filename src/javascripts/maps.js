@@ -5,8 +5,20 @@
 import {d3, Grid, data_check} from '/bundle.js';
 
 // Default data
-const w = 266.61*1.2;
-const h = 424.52*1.2;
+const w = 266.61*10;
+const h = 424.52*10;
+const mapscale = 2800;
+const mapcentre = [0, 57];
+const linewidth = 0.2;
+
+const london_mapscale = 12000;
+const london_mapcentre = [-0.62, 52.15];
+const london_bounding_box_padding = 0.1;
+
+const shetland_mapscale = 3000;
+const shetland_mapcentre = [-3.6, 59.5];
+const shetland_bounding_box_padding = 0.1;
+
 
 const width = w + 20;
 const height = h + 20;
@@ -71,7 +83,9 @@ function get_map_page_state() {
     const la_level = document.getElementById('map-type').value;
     const data_year = document.getElementById('map-year').value;
     // Currently this isn't the value of the checkbox
-    const inset = document.getElementById('london-inset').value;
+    const inset = {"london": document.getElementById('london-inset').checked,
+                   "shetland": document.getElementById('shetland-inset').checked,
+     };
     return [data, la_level, data_year, inset]
 }
 
@@ -94,7 +108,7 @@ function draw_map(container, width, height, data, la_level, data_year, inset){
 
     // create the scale (should be custom)
     const linearscale = d3.scaleSequential(get_table_range(data), d3.interpolateBlues)
-    downloadAndProcessMapData(file, path, dataLookup, ecodeid, linearscale, svg);
+    downloadAndProcessMapData(file, path, dataLookup, ecodeid, linearscale, svg, inset);
 
     // Append the SVG element.
     container.innerHTML = "";
@@ -104,8 +118,8 @@ function draw_map(container, width, height, data, la_level, data_year, inset){
 function setupMapProjection() {
     // Define map scale, projection and location
     return d3.geoPath(d3.geoMercator()
-        .center([9, 54])
-        .scale(1700));
+        .center(mapcentre)
+        .scale(mapscale));
 
 }
 
@@ -171,11 +185,9 @@ function getMapDataAttributes(data_level, data_year) {
     };
 }
 
-function downloadAndProcessMapData(file, path, dataLookup, ecodeid, linearscale, svg) {
-    console.log(ecodeid)
+function downloadAndProcessMapData(file, path, dataLookup, ecodeid, linearscale, svg, inset) {
     d3.json(file).then(map => {
-        const validFeatures = map.features
-            .filter(feature => in_bounds(path, feature))
+        const dataFeatures = map.features
             .flatMap(feature => {
                 const matchedData = dataLookup[feature.properties[ecodeid]];
                 if (matchedData) {
@@ -184,19 +196,48 @@ function downloadAndProcessMapData(file, path, dataLookup, ecodeid, linearscale,
                     return feature;
                 }
             });
-        drawMap(validFeatures, path, linearscale, svg)
+        drawMap(dataFeatures.filter(feature => in_bounds(path, feature)),
+                path,
+                linearscale,
+                svg)
+
+        if (inset.london) {
+            const londonFeatures = dataFeatures.filter(feature => {
+                const ecode = feature.properties[ecodeid];
+                return ecode && ecode.startsWith("E090");
+            })
+            addInset(londonFeatures,
+                linearscale,
+                london_mapcentre,
+                london_mapscale,
+                london_bounding_box_padding,
+                svg
+            );
+        }
+        if (inset.shetland) {
+            const shetlandFeatures = dataFeatures.filter(feature => {
+                const ecode = feature.properties[ecodeid];
+                return ecode && ecode.startsWith("S12000027");
+            })
+            addInset(shetlandFeatures,
+                linearscale,
+                shetland_mapcentre,
+                shetland_mapscale,
+                shetland_bounding_box_padding,
+                svg
+            );
+        }
     });
 }
 
 function drawMap(features, path, linearscale, svg){
-    console.log(features)
     svg.append("g")
         .selectAll("path")
         .data(features)
         .enter()
         .append("path")
         .attr("d", path)
-        .style("stroke-width", 1)
+        .style("stroke-width", linewidth)
         .style("stroke", "#000")
         .style("fill", d => {
             if ('data' in d) {
@@ -208,9 +249,70 @@ function drawMap(features, path, linearscale, svg){
 }
 
 
-export function initMapPage() {
-    add_grid(document.getElementById('grid'));
-};
+
+
+function addInset(features, linearscale, mapcentre, mapscale, padding, svg){
+    // Select only the features to do with London
+
+    const path = d3.geoPath(d3.geoMercator()
+            .center(mapcentre)
+            .scale(mapscale));
+   
+    // get bounds of London
+    var bounds = [[Infinity,Infinity],[0,0]];
+    for (let feature of features) {
+        const featurebounds = path.bounds(feature);
+        // Surely there's some better way to write this
+        if (bounds[0][0] > featurebounds[0][0]) {
+            bounds[0][0] = featurebounds[0][0];
+        }
+        if (bounds[0][1] > featurebounds[0][1]) {
+            bounds[0][1] = featurebounds[0][1];
+        }
+        if (bounds[1][0] < featurebounds[1][0]) {
+            bounds[1][0] = featurebounds[1][0];
+        }
+        if (bounds[1][1] < featurebounds[1][1]) {
+            bounds[1][1] = featurebounds[1][1]
+        }
+    }
+    // Add padding
+    let center = [(bounds[0][0] + bounds[1][0]) * 0.5,
+                   (bounds[0][1] + bounds[1][1]) * 0.5]
+
+    // Again, surely a better way
+    bounds[0][0] = bounds[0][0] + (bounds[0][0] - center[0]) * padding;
+    bounds[0][1] = bounds[0][1] + (bounds[0][1] - center[1]) * padding;
+    bounds[1][0] = bounds[1][0] + (bounds[1][0] - center[0]) * padding;
+    bounds[1][1] = bounds[1][1] + (bounds[1][1] - center[1]) * padding;
+
+    // draw london
+    svg.append("g")
+        .selectAll("path")
+        .data(features)
+        .enter()
+        .append("path")
+        .attr("d", path)
+        .style("stroke-width", linewidth)
+        .style("stroke", "#000")
+        .style("fill", d => {
+            if ('data' in d) {
+                return linearscale(d.data.data);
+            } else {
+                return "none";
+            }
+        });
+
+
+    // draw a square around london
+    svg.append("rect")
+        .attr("x", bounds[0][0])
+        .attr("y", bounds[0][1])
+        .attr('width', bounds[1][0] - bounds[0][0])
+        .attr('height', bounds[1][1] - bounds[0][1])
+        .style("stroke", "#000")
+        .style("fill", "none")
+}
 
 // Check if a feature is in bounds (this is the source of much jank and points
 // to a more fundamental problem with the geojson files that I should fix later)
@@ -219,11 +321,29 @@ function in_bounds(path, feature) {
     if (bounds[0][0] < 0 | bounds[0][1] < 0) {
     return false
     }
-    if (bounds[1][0] > 1024 | bounds[1][1] > 1024) {
+    if (bounds[1][0] > width | bounds[1][1] > height) {
     return false
     }
     if (!(bounds.every((point) => point.every((coordinate) => isFinite(coordinate))))) {
     return false
     }
     return true
+};
+
+export function initMapPage() {
+    add_grid(document.getElementById('grid'));
+
+        const map_settings = document.getElementById("map-settings");
+
+        map_settings.addEventListener("change", (event) => {
+            const state = get_map_page_state();
+            // If user has entered data in the table, draw the map
+            if (state[0].length > 0) {
+                
+                draw_map(
+                    document.getElementById('map'), width, height, ...state
+                );
+            };
+
+        });
 };

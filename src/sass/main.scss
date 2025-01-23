@@ -1,13 +1,13 @@
-@use "../../node_modules/govuk-frontend/dist/govuk/all.scss" with (
+@use "../../node_modules/govuk-frontend/dist/govuk/index.scss" with (
     $govuk-font-family: arial
 );
 
 @import url("https://uicdn.toast.com/grid/latest/tui-grid.css");
 
-#settings-pane {
+#settings-pane > form {
     display : flex
 }
 
-#settings-pane > div {
+#settings-pane > form > div {
     padding-right: 2em
 }

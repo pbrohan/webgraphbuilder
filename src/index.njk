@@ -24,6 +24,7 @@ expand to accommodate the number of rows you have.</p>
 </details>
 
 <div id = 'settings-pane' style = "display:flex">
+  <form id = "map-settings">
   <div id = 'level-menu'>
 
 
@@ -67,7 +68,6 @@ expand to accommodate the number of rows you have.</p>
     }) }}
     </div>
     <div id = 'inset-checkbox'>
-      Here is a checkbox
       {{ govukCheckboxes({
   name: "london-inset",
   items: [
@@ -77,10 +77,19 @@ expand to accommodate the number of rows you have.</p>
     }
   ]
 }) }}
+      {{ govukCheckboxes({
+  name: "shetland-inset",
+  items: [
+    {
+      value: "use-inset",
+      text: "Include Shetland inset"
+    }
+  ]
+}) }}
     </div>
-</div>
+    </form>
+  </div>
 
-Here is a map
 <div id = 'map'></div>
 
 
