@@ -2,11 +2,11 @@
 
   // map ratio is 277.61 x 424.52
 
-import {d3, Grid, data_check} from '/bundle.js';
+import {d3, Grid, data_check, graph_tools} from '/bundle.js';
 
 // Default data
-const w = 266.61*10;
-const h = 424.52*10;
+const w = 266.61*3;
+const h = 424.52*2;
 const mapscale = 2800;
 const mapcentre = [0, 57];
 const linewidth = 0.2;
@@ -19,13 +19,20 @@ const shetland_mapscale = 3000;
 const shetland_mapcentre = [-3.6, 59.5];
 const shetland_bounding_box_padding = 0.1;
 
-
-const width = w + 20;
+const marginLeft = 20;
+const width = w + marginLeft;
 const height = h + 20;
 const marginTop = 200;
 const marginRight = 20;
 const marginBottom = 30;
-const marginLeft = 40;
+
+
+const legend_offset = [4 * marginLeft, h * 7/10]
+const legend_settings = {
+    height: 200,
+    width: 60
+  };
+
 
 const map_loc = "/assets/maps/"
 const map_data = {
@@ -110,11 +117,15 @@ function draw_map(container, width, height, data, la_level, data_year, inset){
     const linearscale = d3.scaleSequential(get_table_range(data), d3.interpolateBlues)
     downloadAndProcessMapData(file, path, dataLookup, ecodeid, linearscale, svg, inset);
 
+    svg.append("g")
+        .attr("transform", `translate(${legend_offset[0]}, ${legend_offset[1]})`)
+        .append(() =>  graph_tools.VerticalLegend(linearscale, legend_settings));
+
     // Append the SVG element.
     container.innerHTML = "";
     container.append(svg.node());
-}
 
+};
 function setupMapProjection() {
     // Define map scale, projection and location
     return d3.geoPath(d3.geoMercator()
@@ -252,13 +263,11 @@ function drawMap(features, path, linearscale, svg){
 
 
 function addInset(features, linearscale, mapcentre, mapscale, padding, svg){
-    // Select only the features to do with London
-
     const path = d3.geoPath(d3.geoMercator()
             .center(mapcentre)
             .scale(mapscale));
    
-    // get bounds of London
+    // get bounds of inset
     var bounds = [[Infinity,Infinity],[0,0]];
     for (let feature of features) {
         const featurebounds = path.bounds(feature);
@@ -286,7 +295,7 @@ function addInset(features, linearscale, mapcentre, mapscale, padding, svg){
     bounds[1][0] = bounds[1][0] + (bounds[1][0] - center[0]) * padding;
     bounds[1][1] = bounds[1][1] + (bounds[1][1] - center[1]) * padding;
 
-    // draw london
+    // draw inset
     svg.append("g")
         .selectAll("path")
         .data(features)
@@ -304,7 +313,7 @@ function addInset(features, linearscale, mapcentre, mapscale, padding, svg){
         });
 
 
-    // draw a square around london
+    // draw a square around inset
     svg.append("rect")
         .attr("x", bounds[0][0])
         .attr("y", bounds[0][1])

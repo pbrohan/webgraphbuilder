@@ -11,3 +11,7 @@
 #settings-pane > form > div {
     padding-right: 2em
 }
+
+.tick > text {
+    @extend .govuk-body-s
+}
