@@ -1,4 +1,4 @@
-@use "../../node_modules/govuk-frontend/dist/govuk/index.scss" with (
+@use "../../node_modules/govuk-frontend/dist/govuk/index.scss" as govuk with (
     $govuk-font-family: arial
 );
 
@@ -12,6 +12,51 @@
     padding-right: 2em
 }
 
-.tick > text {
-    @extend .govuk-body-s
+.msg-box {
+    width: 100%;
+    max-width: 500px;
+    position: fixed;
+    top: 200px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid govuk.$govuk-error-colour;
+    background-color: govuk.$govuk-error-colour;
+}
+
+.msg-box-title {
+    border-bottom: 1px solid transparent;
+    padding: 2px 15px 5px;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: arial;
+    color: #fff;
+}
+
+.msg-box-body {
+    font-family: arial;
+    font-size: 1.125rem;
+    color: #0b0c0c;
+    padding: 15px;
+    background-color: #fff;
+    height: 100%;
+    font-weight: 700;
+}
+
+.msg-box-button {
+    @extend .govuk-button;
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+/* Stick to the top when the viewport height is small */
+@media (max-height: 300px) {
+    .msg-box {
+        top: 0; 
+    }
+}
+
+/* Fill when width when viewport width is small */
+@media (max-width: 500px) {
+    .msgbox {
+        width: 100%;
+    }
 }

@@ -2,7 +2,7 @@
 
   // map ratio is 277.61 x 424.52
 
-import {d3, Grid, data_check, graph_tools} from '/bundle.js';
+import {d3, Grid, data_check, graph_tools, msgBox} from '/bundle.js';
 
 // Default data
 const w = 266.61*3;
@@ -110,7 +110,15 @@ function draw_map(container, width, height, data, la_level, data_year, inset){
     const path = setupMapProjection();
     const svg = createSvgElement(width, height);
     const dataLookup = createDataLookup(data);
-    const data_level = getDataLevel(dataLookup, la_level);
+    let data_level
+    try {
+    data_level = getDataLevel(dataLookup, la_level);
+    } catch (error) {
+        if (error instanceof data_check.EcodeParseError) {
+            msgBox("Ecode Error", "You have entered Ecodes from both counties and districts")
+        }
+        return 0;
+    }
     const { file, name_id, ecodeid } = getMapDataAttributes(data_level, data_year)
 
     // create the scale (should be custom)
