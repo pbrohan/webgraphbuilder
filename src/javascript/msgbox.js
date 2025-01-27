@@ -12,8 +12,9 @@ export default function msgBox(title, contents, status) {
     <div class = "msg-box-title">
         ${title}
     </div>
+    <div class = "msg-box-body" id = "msg-box-body">
+    </div>
     <div class = "msg-box-body">
-        ${contents}
     <br/>
     <button type = "submit" data-prevent-double-click="true" class="msg-box-button" data-module="govuk-button" id="msgbox-ok">
      Dismiss 
@@ -22,6 +23,10 @@ export default function msgBox(title, contents, status) {
     `
     // bad
     box.innerHTML = html
+    // Add in body element
+    document.getElementById("msg-box-body").appendChild(contents)
+
+
     // Remove box when clicking button
     document.getElementById("msgbox-ok").addEventListener("click", (event) => {
             document.getElementById("msg-box").remove();

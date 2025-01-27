@@ -96,6 +96,44 @@ function get_map_page_state() {
     return [data, la_level, data_year, inset]
 }
 
+/**
+ * Function to create a table element in memory
+ * @param {Object} data - The object containing the table data
+ * @returns {HTMLTableElement} - The generated table element
+ */
+function createTable(data) {
+    const table = document.createElement('table');
+    
+    // Create the table header
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    Object.keys(data).forEach(key => {
+        const th = document.createElement('th');
+        th.textContent = key;
+        headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+    
+    // Find the longest array length
+    const maxRows = Math.max(...Object.values(data).map(arr => arr.length));
+
+    // Create the table body
+    const tbody = document.createElement('tbody');
+    for (let i = 0; i < maxRows; i++) {
+        const row = document.createElement('tr');
+        Object.keys(data).forEach(key => {
+        const cell = document.createElement('td');
+        cell.textContent = data[key][i] !== undefined ? data[key][i] : ''; // Fill with empty string if no value
+        row.appendChild(cell);
+        });
+        tbody.appendChild(row);
+    }
+    table.appendChild(tbody);
+
+    return table; // Return the table element
+    }
+
 
 /**
  * Draws a map using data from the accompanying table
@@ -115,7 +153,14 @@ function draw_map(container, width, height, data, la_level, data_year, inset){
     data_level = getDataLevel(dataLookup, la_level);
     } catch (error) {
         if (error instanceof data_check.EcodeParseError) {
-            msgBox("Ecode Error", "You have entered Ecodes from both counties and districts")
+            const tbl = createTable(error.ecodes);
+            const errorbox = document.createElement('div')
+            const text = document.createElement('p')
+                text.textContent = "You have entered Ecodes from both counties and districts"
+            errorbox.appendChild(text);
+            errorbox.appendChild(tbl);
+            msgBox("Ecode Error", errorbox)
+            container.innerHTML = "";
         }
         return 0;
     }
@@ -369,6 +414,5 @@ export function initMapPage() {
         });
 
         document.getElementById("map-dl").addEventListener("click", () => {
-            console.log(document.querySelector('#map > svg'));
             graph_tools.download_svg(document.querySelector('#map > svg'))})
 };

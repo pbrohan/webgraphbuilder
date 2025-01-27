@@ -1,4 +1,4 @@
-const { data_check, Ec } = require('../../javascript/data_check')
+import data_check from './javascript/data_check'
 
 describe('guess_region_type', () => {
 

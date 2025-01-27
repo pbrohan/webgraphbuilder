@@ -146,7 +146,6 @@ function VerticalLegend(colour,
     }
 
 function download_svg(element) {
-    console.log(element);
     // Convert the element to a data URL
     const svgData = new XMLSerializer().serializeToString(element);
     const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });

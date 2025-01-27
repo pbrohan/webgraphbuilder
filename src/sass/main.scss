@@ -21,6 +21,35 @@
     transform: translateX(-50%);
     border: 5px solid govuk.$govuk-error-colour;
     background-color: govuk.$govuk-error-colour;
+    z-index: 16; // Needs to be on top of tui grid line at z-index 15
+}
+
+.msg-box  table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.msg-box  thead {
+    border-bottom: 2px solid black;
+}
+
+.msg-box tbody {
+    font-weight: 100;
+    border-left: 0px;
+}
+
+.msg-box tbody td {
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    text-align: center;
+}
+
+.msg-box table td:first-child{
+   border-left: none;
+}
+
+.msg-box table tr td:last-child{
+    border-right: none;
 }
 
 .msg-box-title {
