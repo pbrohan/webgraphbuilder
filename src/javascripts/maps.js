@@ -149,6 +149,29 @@ function draw_map(container, width, height, data, la_level, data_year, inset){
     const svg = createSvgElement(width, height);
     const dataLookup = createDataLookup(data);
     let data_level
+    // Find duplicate rows
+    try{
+        console.log(data);
+        data_check.check_duplicate_rows(data, "ecode");
+    } catch (error) {
+        if (error instanceof data_check.DuplicateRow) {
+            const lst = document.createElement("ul");
+            for (let r in error.rows){
+                const el = document.createElement("li");
+                el.textContent = error.rows[r];
+                lst.appendChild(el);
+            }
+            const errorbox = document.createElement('div');
+            const text = document.createElement('p')
+                text.textContent = "You have entered duplicate Ecodes";
+            errorbox.appendChild(text);
+            errorbox.appendChild(lst);
+            msgBox("Duplicate Ecode", errorbox);
+            container.innerHTML = "";
+            return -1;
+        }
+    }
+
     try {
     data_level = getDataLevel(dataLookup, la_level);
     } catch (error) {

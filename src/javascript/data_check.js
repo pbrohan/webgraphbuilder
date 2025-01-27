@@ -18,6 +18,43 @@ class UnknownEcode extends EcodeParseError {
     }
 }
 
+class DuplicateRow extends Error {
+    constructor(message, row) {
+        super(message);
+        this.rows = row;
+        this.name = this.constructor.name;
+        Error.captureStackTrace(this, this.constructor);
+    }
+}
+
+// 
+function check_duplicate_rows(data, index){
+    // run through rows and make array of keys
+    var keys = [];
+    const map = new Map();
+    const duplicates = [];
+    for (let d of data) {
+        keys.push(d[index])
+    }
+    keys.forEach(item => {
+        const t = item.trim()
+        if (map.has(t)) {
+            if (map.get(t) === 1) {
+                duplicates.push(t);
+            }
+            map.set(t, map.get(t) + 1);
+        } else {
+            map.set(t, 1);
+        }
+    })
+
+    if (duplicates.length === 0) {
+        return 1
+    } else {
+        throw new DuplicateRow("Duplicate row", duplicates)
+    }
+}
+
 function guess_region_type(data) {
     // This will need updating when there are more datasets
     var region_type = null;
@@ -86,6 +123,8 @@ function guess_data_type(data) {
 const data_check = {
     guess_region_type,
     guess_data_type,
+    check_duplicate_rows,
+    DuplicateRow,
     EcodeParseError
 }
 
