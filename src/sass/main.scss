@@ -4,11 +4,15 @@
 
 @import url("https://uicdn.toast.com/grid/latest/tui-grid.css");
 
-#settings-pane > form {
+.settings-container{
+    display: flex;
+}
+
+.settings-container > form {
     display : flex
 }
 
-#settings-pane > form > div {
+.settings-container > form > div {
     padding-right: 2em
 }
 
@@ -88,4 +92,19 @@
     .msgbox {
         width: 100%;
     }
+}
+
+/* Align the header correctly */
+.govuk-header__logo{
+    width: unset;
+}
+
+.graph-header{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+div.graph-header > div.govuk-form-group {
+    margin-bottom: 10px;
+    justify-self: end;
 }

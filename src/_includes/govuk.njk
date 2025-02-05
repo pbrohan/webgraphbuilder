@@ -1,25 +1,39 @@
 {% extends "govuk/template.njk" %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
 
 {% block pageTitle %}
 Peter's Graph Builder
 {% endblock %}
 
 {% block head %}
+
   <link rel="stylesheet" href="/stylesheets/main.css">
-  <script type="module">
-    import {d3, Grid, initAll} from '/bundle.js';
-    window.initAll = initAll; 
-  </script>
 {% endblock %}
 
 {% block header %}
 <header class="govuk-header" data-module="govuk-header">
-  <div class="govuk-header__container govuk-width-container">
+  <div class="govuk-header__container govuk-width-container graph-header">
     <div class="govuk-header__logo">
       <a href="#" class="govuk-header__link govuk-header__link--homepage">
         {{ servicetitle}}
       </a>
     </div>
+    {% set org_list = [] %}
+      {% for orgKey, orgValue in colours %}
+      {% set newItem = {
+        value: orgKey,
+        text: orgKey}
+      %}
+      {% set x = org_list.push(newItem) %}
+    {% endfor %}
+
+    {{ govukSelect({
+      id: "org_list",
+      name: "org_list",
+      label: {
+      },
+      items: org_list
+    }) }}
   </div>
 </header>
 {% endblock %}
@@ -33,6 +47,7 @@ Peter's Graph Builder
 {% block bodyEnd %}
   {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
   <script type = "module">
+    import {initAll} from "/bundle.js";
     initAll()
   </script>
 {% endblock %}  

@@ -20,6 +20,7 @@ export default function (eleventyConfig) {
         dataTemplateEngine: "njk",
         dir: {
             input: "src",
+            data: "_data",
             includes: "_includes",
             output: "output",
         },

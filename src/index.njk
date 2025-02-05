@@ -4,9 +4,9 @@ servicetitle: Peter's Graph Builder
 pagetitle: Home Page
 ---
 <!--link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" /-->
-    {% from "govuk/components/select/macro.njk" import govukSelect %}
     {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
     {% from "govuk/components/button/macro.njk" import govukButton %}
+    {% from "govuk/components/select/macro.njk" import govukSelect %}
 <h3> Instructions </h3>
 <p>Click "Show table" to show the input table. Paste your data into the table. Your
 data should consist of one column which is Ecodes (I will write a better explanation
@@ -19,77 +19,85 @@ expand to accommodate the number of rows you have.</p>
   probably many bugs.
 </p>
 
+
 <details>
   <summary>Show table</summary>
  <div id = 'grid'></div>
 </details>
 
-<div id = 'settings-pane' style = "display:flex">
+<div id = 'settings-pane'>
+  <div id = 'map-settings-container' class = 'settings-container'>
   <form id = "map-settings">
-  <div id = 'level-menu'>
-
-
-    {{ govukSelect({
-      id: "map-type",
-      name: "map-type",
-      label: {
-        text: "LA Level"
-      },
-      items: [
-        {
-          value: "county",
-          text: "County",
-          selected: true
+    <div id = 'level-menu'>
+      {{ govukSelect({
+        id: "map-type",
+        name: "map-type",
+        label: {
+          text: "LA Level"
         },
-        {
-          value: "district",
-          text: "District"
-        }
-      ]
-    }) }}
-  </div>
-  <div id = 'year-menu'>
-        {{ govukSelect({
-      id: "map-year",
-      name: "map-year",
-      label: {
-        text: "Data Financial Year"
-      },
-      items: [
-        {
-          value: "2023",
-          text: "2023/24",
-          selected: true
+        items: [
+          {
+            value: "county",
+            text: "County",
+            selected: true
+          },
+          {
+            value: "district",
+            text: "District"
+          }
+        ]
+      }) }}
+    </div>
+    <div id = 'year-menu'>
+      {{ govukSelect({
+        id: "map-year",
+        name: "map-year",
+        label: {
+          text: "Data Financial Year"
         },
-        {
-          value: "2022",
-          text: "2023/23"
-        }
-      ]
-    }) }}
+        items: [
+          {
+            value: "2023",
+            text: "2023/24",
+            selected: true
+          },
+          {
+            value: "2022",
+            text: "2023/23"
+          }
+        ]
+      }) }}
     </div>
     <div id = 'inset-checkbox'>
       {{ govukCheckboxes({
-  name: "london-inset",
-  items: [
-    {
-      value: "use-inset",
-      text: "Include London inset"
-    }
-  ]
-}) }}
+        name: "london-inset",
+        items: [
+          {
+            value: "use-inset",
+            text: "Include London inset"
+          }
+        ]
+      }) }}
       {{ govukCheckboxes({
-  name: "shetland-inset",
-  items: [
-    {
-      value: "use-inset",
-      text: "Include Shetland inset"
-    }
-  ]
-}) }}
+        name: "shetland-inset",
+        items: [
+          {
+            value: "use-inset",
+            text: "Include Shetland inset"
+          }
+        ]
+      }) }}
     </div>
-    </form>
+  </form>
   </div>
+  <div id = 'palette' style = "display:flex">
+    {# MHCLG is default selection #}
+    {% for colour, values in colours.MHCLG.light %}
+      <div style = "display:flex; padding-left: 1em">
+        <div style="background-color: rgb({{values[0]}}, {{values[1]}}, {{values[2]}}); width: 10px; height:10px"></div><span class = "govuk-body">{{colour}}</span></div>
+    {% endfor %} 
+  </div>
+</div>
 
 {{ govukButton({
   id: "map-dl",
@@ -103,8 +111,6 @@ expand to accommodate the number of rows you have.</p>
 
 
 <script type = "module">
-  import {initAll} from '/bundle.js';
-  initAll();
   import('./javascripts/maps.js').then(module => {
     module.initMapPage()
   })

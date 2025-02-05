@@ -2,7 +2,7 @@
 
   // map ratio is 277.61 x 424.52
 
-import {d3, Grid, data_check, graph_tools, msgBox} from '/bundle.js';
+import {d3, Grid, data_check, graph_tools, msgBox, colours} from '/bundle.js';
 
 // Default data
 const w = 266.61*3;
@@ -419,23 +419,49 @@ function in_bounds(path, feature) {
     return true
 };
 
+function set_palette(el) {
+    var map_colours = colours[el.value]
+    // if palette is loaded successfuly, change the header tint to the correct
+    // colour
+    if (map_colours) {
+        if (map_colours) {
+            document.querySelector(".graph-header").style.setProperty("border-bottom", 
+                "10px solid rgb(" + map_colours.primary + ")" // Javascript is awful
+            )
+        }
+    }
+    // Also set palette options when built
+}
+
+function make_map_if_data() {
+    const state = get_map_page_state();
+    // If user has entered data in the table, draw the map
+    if (state[0].length > 0) {
+        
+        draw_map(
+            document.getElementById('map'), width, height, ...state
+        );
+    };
+}
+
+
 export function initMapPage() {
     add_grid(document.getElementById('grid'));
 
-        const map_settings = document.getElementById("map-settings");
+    const map_settings = document.getElementById("map-settings");
+    const org_list = document.getElementById("org_list")
 
-        map_settings.addEventListener("change", (event) => {
-            const state = get_map_page_state();
-            // If user has entered data in the table, draw the map
-            if (state[0].length > 0) {
-                
-                draw_map(
-                    document.getElementById('map'), width, height, ...state
-                );
-            };
+    set_palette(org_list)
 
-        });
+    org_list.addEventListener("change", (event) => {
+        set_palette(event.target);
+        make_map_if_data();
+    })
 
-        document.getElementById("map-dl").addEventListener("click", () => {
-            graph_tools.download_svg(document.querySelector('#map > svg'))})
+    map_settings.addEventListener("change", (event) => {
+        make_map_if_data();
+    });
+
+    document.getElementById("map-dl").addEventListener("click", () => {
+        graph_tools.download_svg(document.querySelector('#map > svg'))})
 };
