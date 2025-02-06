@@ -15,14 +15,18 @@ function VerticalLegend(colour,
      tickValues
     } = {}) {
 
-        function ramp(colour, n = 256) {
+        function ramp(colour, n = 256, down=false) {
             const canvas = document.createElement("canvas");
             canvas.width = 1;
             canvas.height = n;
             const context = canvas.getContext("2d");
             for (let i = 0; i < n; ++i) {
                 context.fillStyle = colour(i / (n-1));
-                context.fillRect(0, i, 1, 1)
+                if (down) {
+                    context.fillRect(0, n-i-1, 1, 1)
+                } else {
+                    context.fillRect(0, i, 1, 1)
+                }
             }
             return canvas;
         }
@@ -49,14 +53,14 @@ function VerticalLegend(colour,
                 .attr("width", width - marginLeft - marginRight)
                 .attr("height", height - marginTop - marginBottom)
                 .attr("preserveAspectRatio", "none")
-                .attr("xlink:href", ramp(colour.copy().domain(d3.quantize(d3.interpolate(0, 1), n))).toDataURL());
+                .attr("xlink:href", ramp(colour.copy().domain(d3.quantize(d3.interpolate(0, 1), n)), undefined, true).toDataURL());
         }
 
         // Sequential
         else if (colour.interpolator) {
             y = Object.assign(colour.copy()
-                .interpolator(d3.interpolateRound(marginBottom, height - marginTop)),
-                {range() { return [marginBottom, height - marginTop]; }});
+                .interpolator(d3.interpolateRound(height - marginTop, marginBottom)),
+                {range() { return [height - marginTop, marginBottom]; }});
                 
             svg.append("image")
             .attr("x", marginLeft)
@@ -64,7 +68,7 @@ function VerticalLegend(colour,
             .attr("width", width - marginLeft - marginRight)
             .attr("height", height - marginTop - marginBottom)
             .attr("preserveAspectRatio", "none")
-            .attr("xlink:href", ramp(colour.interpolator()).toDataURL());
+            .attr("xlink:href", ramp(colour.interpolator(), undefined, true).toDataURL());
 
             if (!y.ticks) {
                 if (tickValues === undefined) {
