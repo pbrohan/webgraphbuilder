@@ -1,6 +1,6 @@
 /*
 The most contentious of all of the files! This currently only contains
-the MHCLG palatte. If othe people want to tell me what their palettes
+the MHCLG palette. If othe people want to tell me what their palettes
 are they can be added in
 */
 
@@ -19,7 +19,7 @@ const mhclg = {
     light: {pink: [255, 93, 136],
             red: [221, 50, 48],
             orange: [250, 163, 50],
-            green: [154, 1847, 60],
+            green: [154, 187, 60],
             blue: [8, 179, 213],
             indigo: [135, 135, 192],
             grey: [153, 152, 143]

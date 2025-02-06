@@ -108,3 +108,44 @@ div.graph-header > div.govuk-form-group {
     margin-bottom: 10px;
     justify-self: end;
 }
+
+.palette {
+    display: flex;
+    background-color: black;
+    margin-bottom: 10px;
+}
+
+.palette-cell {
+    @extend .govuk-body;
+    display: flex;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-left: 2px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.palette-cell__selected {
+    background-color: govuk.govuk-colour("light-blue");
+    color: white;
+}
+
+.palette-preview{
+    width: 10px;
+    height: 10px;
+    border: 2px solid black;
+}
+
+.palette-text{
+    margin-bottom: 0px;
+    padding-left: 0.5em;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

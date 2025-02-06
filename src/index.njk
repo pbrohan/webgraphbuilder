@@ -90,11 +90,11 @@ expand to accommodate the number of rows you have.</p>
     </div>
   </form>
   </div>
-  <div id = 'palette' style = "display:flex">
+  <div id = 'palette' class="palette">
     {# MHCLG is default selection #}
     {% for colour, values in colours.MHCLG.light %}
-      <div style = "display:flex; padding-left: 1em">
-        <div style="background-color: rgb({{values[0]}}, {{values[1]}}, {{values[2]}}); width: 10px; height:10px"></div><span class = "govuk-body">{{colour}}</span></div>
+      <div class = "palette-cell">
+        <div class = "palette-preview" style="background-color: rgb({{values[0]}}, {{values[1]}}, {{values[2]}});"></div><span class = "palette-text">{{colour}}</span></div>
     {% endfor %} 
   </div>
 </div>

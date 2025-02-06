@@ -89,12 +89,27 @@ function get_map_page_state() {
     const data = data_table.getData();
     const la_level = document.getElementById('map-type').value;
     const data_year = document.getElementById('map-year').value;
-    // Currently this isn't the value of the checkbox
     const inset = {"london": document.getElementById('london-inset').checked,
                    "shetland": document.getElementById('shetland-inset').checked,
      };
-    return [data, la_level, data_year, inset]
-}
+    // find out which palette is selected and use the text from that as the key
+    const org_list = document.getElementById("org_list");
+    const colour_selected = document.querySelector(
+        ".palette-cell__selected > .palette-text")
+    // Check that the colour name is valid, else pick the primary colour
+    let colour;
+    if ( colour_selected ) {
+        if (Object.keys(colours[org_list.value].light).includes(colour_selected.textContent)) {
+            colour = colours[org_list.value].light[colour_selected.textContent];
+        } else {
+            colour = colours[org_list.value].primary;
+        }
+    } else {
+            colour = colours[org_list.value].primary;
+        }
+
+    return [data, la_level, data_year, inset, colour]
+    }
 
 /**
  * Function to create a table element in memory
@@ -144,14 +159,13 @@ function createTable(data) {
  * @param {boolean} inset 
  * @returns {null}
  */
-function draw_map(container, width, height, data, la_level, data_year, inset){
+function draw_map(container, width, height, data, la_level, data_year, inset, colour){
     const path = setupMapProjection();
     const svg = createSvgElement(width, height);
     const dataLookup = createDataLookup(data);
     let data_level
     // Find duplicate rows
     try{
-        console.log(data);
         data_check.check_duplicate_rows(data, "ecode");
     } catch (error) {
         if (error instanceof data_check.DuplicateRow) {
@@ -190,7 +204,9 @@ function draw_map(container, width, height, data, la_level, data_year, inset){
     const { file, name_id, ecodeid } = getMapDataAttributes(data_level, data_year)
 
     // create the scale (should be custom)
-    const linearscale = d3.scaleSequential(get_table_range(data), d3.interpolateBlues)
+    const linearscale = d3.scaleSequential(get_table_range(data), d3.interpolate(
+        "rbg(0,0,0)", "rgb(" + colour[0] +"," + colour[1] + "," + colour[2], ")"
+    ))
     downloadAndProcessMapData(file, path, dataLookup, ecodeid, linearscale, svg, inset);
 
     svg.append("g")
@@ -431,17 +447,38 @@ function set_palette(el) {
         }
     }
     // Also set palette options when built
+    const palette = [...document.querySelectorAll(".palette-cell")];
+    let set_selected = true;
+    palette.forEach(cell => {
+        if (set_selected) {
+            cell.classList.add("palette-cell__selected");
+            set_selected = false;
+        }
+        cell.addEventListener("click", (event) => {
+            select_palette_colour(event.currentTarget);
+            make_map_if_data();
+        })
+    })
+
 }
 
 function make_map_if_data() {
     const state = get_map_page_state();
     // If user has entered data in the table, draw the map
     if (state[0].length > 0) {
-        
         draw_map(
             document.getElementById('map'), width, height, ...state
         );
     };
+}
+
+function select_palette_colour(el) {
+    // Remove element from currently selected palettes
+    const selected = [...document.querySelectorAll(".palette-cell__selected")];
+    selected.forEach(cell => {
+        cell.classList.remove("palette-cell__selected");
+    });
+    el.classList.add("palette-cell__selected");
 }
 
 
@@ -449,9 +486,9 @@ export function initMapPage() {
     add_grid(document.getElementById('grid'));
 
     const map_settings = document.getElementById("map-settings");
-    const org_list = document.getElementById("org_list")
+    const org_list = document.getElementById("org_list");
 
-    set_palette(org_list)
+    set_palette(org_list);
 
     org_list.addEventListener("change", (event) => {
         set_palette(event.target);
