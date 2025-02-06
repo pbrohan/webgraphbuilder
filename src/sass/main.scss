@@ -149,3 +149,13 @@ div.graph-header > div.govuk-form-group {
     -ms-user-select: none;
     user-select: none;
 }
+
+.map-tooltip{
+    @extend .govuk-body-s;
+    background-color: white;
+    position: absolute;
+    z-index: 30;
+    padding: 0.2em;
+    max-width: 300px;
+    border: 2px solid black;
+}

@@ -26,7 +26,6 @@ const marginTop = 200;
 const marginRight = 20;
 const marginBottom = 30;
 
-
 const legend_offset = [4 * marginLeft, h * 7/10]
 const legend_settings = {
     height: 200,
@@ -164,6 +163,7 @@ function draw_map(container, width, height, data, la_level, data_year, inset, co
     const svg = createSvgElement(width, height);
     const dataLookup = createDataLookup(data);
     let data_level
+    container.innerHTML = "";
     // Find duplicate rows
     try{
         data_check.check_duplicate_rows(data, "ecode");
@@ -201,13 +201,13 @@ function draw_map(container, width, height, data, la_level, data_year, inset, co
         }
         return 0;
     }
-    const { file, name_id, ecodeid } = getMapDataAttributes(data_level, data_year)
+    const { file, nameid, ecodeid } = getMapDataAttributes(data_level, data_year)
 
     // create the scale (should be custom)
     const linearscale = d3.scaleSequential(get_table_range(data), d3.interpolate(
         "rbg(0,0,0)", "rgb(" + colour[0] +"," + colour[1] + "," + colour[2], ")"
     ))
-    downloadAndProcessMapData(file, path, dataLookup, ecodeid, linearscale, svg, inset);
+    downloadAndProcessMapData(file, path, dataLookup, ecodeid, nameid, linearscale, svg, inset, container);
 
     svg.append("g")
         .attr("transform", `translate(${legend_offset[0]}, ${legend_offset[1]})`)
@@ -218,7 +218,6 @@ function draw_map(container, width, height, data, la_level, data_year, inset, co
                 .attr("font-family", "arial"));
 
     // Append the SVG element.
-    container.innerHTML = "";
     container.append(svg.node());
 
 };
@@ -292,7 +291,9 @@ function getMapDataAttributes(data_level, data_year) {
     };
 }
 
-function downloadAndProcessMapData(file, path, dataLookup, ecodeid, linearscale, svg, inset) {
+
+
+function downloadAndProcessMapData(file, path, dataLookup, ecodeid, nameid, linearscale, svg, inset, container) {
     d3.json(file).then(map => {
         const dataFeatures = map.features
             .flatMap(feature => {
@@ -303,10 +304,18 @@ function downloadAndProcessMapData(file, path, dataLookup, ecodeid, linearscale,
                     return feature;
                 }
             });
+
+        // Make tooltip
+        const tooltip = document.createElement("div");
+        tooltip.classList.add("map-tooltip");
+        container.appendChild(tooltip);
+        
         drawMap(dataFeatures.filter(feature => in_bounds(path, feature)),
                 path,
                 linearscale,
-                svg)
+                svg,
+                nameid,
+                tooltip)
 
         if (inset.london) {
             const londonFeatures = dataFeatures.filter(feature => {
@@ -318,7 +327,9 @@ function downloadAndProcessMapData(file, path, dataLookup, ecodeid, linearscale,
                 london_mapcentre,
                 london_mapscale,
                 london_bounding_box_padding,
-                svg
+                svg,
+                nameid,
+                tooltip
             );
         }
         if (inset.shetland) {
@@ -331,13 +342,15 @@ function downloadAndProcessMapData(file, path, dataLookup, ecodeid, linearscale,
                 shetland_mapcentre,
                 shetland_mapscale,
                 shetland_bounding_box_padding,
-                svg
+                svg,
+                nameid,
+                tooltip
             );
         }
     });
 }
 
-function drawMap(features, path, linearscale, svg){
+function drawMap(features, path, linearscale, svg, nameid, tooltip){
     svg.append("g")
         .selectAll("path")
         .data(features)
@@ -350,15 +363,37 @@ function drawMap(features, path, linearscale, svg){
             if ('data' in d) {
                 return linearscale(d.data.data);
             } else {
-                return "none";
+                return "white";
             }
-        });
+        })
+        .on("mouseover", (event) => la_mouseover(event, tooltip))
+        .on("mouseleave", (event) => la_mouseleave(event, tooltip))
+        .on("mousemove", (event) => la_mousemove(event, tooltip, nameid));
+}
+
+// Tooltip functions
+function la_mouseover(event, tooltip) {
+    tooltip.style.opacity = 1;
+    event.target.style.strokeWidth = linewidth * 3;
+}
+
+function la_mousemove(event, tooltip, nameid) {
+    let event_value = "-";
+    if ('data' in event.target.__data__) {
+        event_value = event.target.__data__.data.data;
+    }
+    tooltip.innerHTML = event.target.__data__.properties[nameid] + ": " + event_value;
+    tooltip.style.left = event.pageX + 15 + "px";
+    tooltip.style.top = event.pageY +  "px";
+}
+
+function la_mouseleave(event, tooltip) {
+    tooltip.style.opacity = 0;
+    event.target.style.strokeWidth = linewidth;
 }
 
 
-
-
-function addInset(features, linearscale, mapcentre, mapscale, padding, svg){
+function addInset(features, linearscale, mapcentre, mapscale, padding, svg, nameid, tooltip){
     const path = d3.geoPath(d3.geoMercator()
             .center(mapcentre)
             .scale(mapscale));
@@ -404,9 +439,12 @@ function addInset(features, linearscale, mapcentre, mapscale, padding, svg){
             if ('data' in d) {
                 return linearscale(d.data.data);
             } else {
-                return "none";
+                return "white";
             }
-        });
+        })
+        .on("mouseover", (event) => la_mouseover(event, tooltip))
+        .on("mouseleave", (event) => la_mouseleave(event, tooltip))
+        .on("mousemove", (event) => la_mousemove(event, tooltip, nameid));
 
 
     // draw a square around inset
