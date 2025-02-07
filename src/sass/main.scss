@@ -159,3 +159,26 @@ div.graph-header > div.govuk-form-group {
     max-width: 300px;
     border: 2px solid black;
 }
+
+.table-holder-details {
+    margin-bottom: 30px;
+    border-bottom: 2px solid black;
+}
+
+.table-holder{
+    @extend .govuk-body;
+    margin: unset;
+    border: 2px black solid;
+    padding: 0.2em;
+    background-color: govuk.govuk-colour("green");
+    color: govuk.govuk-colour("white");
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    box-shadow: 0 2px 0 rgb(0, 44.8, 24);
+}
+
+.settings-checkbox {
+    margin-top: 25px;
+}

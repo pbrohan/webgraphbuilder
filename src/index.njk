@@ -8,7 +8,7 @@ pagetitle: Home Page
     {% from "govuk/components/button/macro.njk" import govukButton %}
     {% from "govuk/components/select/macro.njk" import govukSelect %}
 <h3> Instructions </h3>
-<p>Click "Show table" to show the input table. Paste your data into the table. Your
+<p>Click "Show table" to show the input table. Click on the table and paste your data into it. Your
 data should consist of one column which is Ecodes (I will write a better explanation
 later) and one column of values for those Ecodes. The table will automatically 
 expand to accommodate the number of rows you have.</p>
@@ -20,8 +20,8 @@ expand to accommodate the number of rows you have.</p>
 </p>
 
 
-<details>
-  <summary>Show table</summary>
+<details class="table-holder-details">
+  <summary class="table-holder">Show input table</summary>
  <div id = 'grid'></div>
 </details>
 
@@ -68,22 +68,24 @@ expand to accommodate the number of rows you have.</p>
         ]
       }) }}
     </div>
-    <div id = 'inset-checkbox'>
+    <div id = 'london-checkbox' class = "settings-checkbox">
       {{ govukCheckboxes({
         name: "london-inset",
         items: [
           {
             value: "use-inset",
-            text: "Include London inset"
+            text: "London inset"
           }
         ]
       }) }}
+    </div>
+    <div id = 'shetland-checkbox' class = "settings-checkbox">
       {{ govukCheckboxes({
         name: "shetland-inset",
         items: [
           {
             value: "use-inset",
-            text: "Include Shetland inset"
+            text: "Shetland inset"
           }
         ]
       }) }}
