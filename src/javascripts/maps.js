@@ -225,7 +225,8 @@ function setupMapProjection() {
     // Define map scale, projection and location
     return d3.geoPath(d3.geoMercator()
         .center(mapcentre)
-        .scale(mapscale));
+        .scale(mapscale)
+        .clipExtent([[0,0], [width, height]]));
 
 }
 
@@ -310,7 +311,7 @@ function downloadAndProcessMapData(file, path, dataLookup, ecodeid, nameid, line
         tooltip.classList.add("map-tooltip");
         container.appendChild(tooltip);
         
-        drawMap(dataFeatures.filter(feature => in_bounds(path, feature)),
+        drawMap(dataFeatures,
                 path,
                 linearscale,
                 svg,
@@ -356,7 +357,11 @@ function drawMap(features, path, linearscale, svg, nameid, tooltip){
         .data(features)
         .enter()
         .append("path")
-        .attr("d", path)
+        .attr("d", d => {
+            let p = path(d)
+            if (p) p = removeExtraBox(p, width, height);
+            return p;
+            })
         .style("stroke-width", linewidth)
         .style("stroke", "#000")
         .style("fill", d => {
@@ -396,7 +401,8 @@ function la_mouseleave(event, tooltip) {
 function addInset(features, linearscale, mapcentre, mapscale, padding, svg, nameid, tooltip){
     const path = d3.geoPath(d3.geoMercator()
             .center(mapcentre)
-            .scale(mapscale));
+            .scale(mapscale)
+            );
    
     // get bounds of inset
     var bounds = [[Infinity,Infinity],[0,0]];
@@ -432,7 +438,11 @@ function addInset(features, linearscale, mapcentre, mapscale, padding, svg, name
         .data(features)
         .enter()
         .append("path")
-        .attr("d", path)
+        .attr("d", d => {
+            let p = path(d)
+            if (p) p = removeExtraBox(p, width, height);
+            return p;
+            })
         .style("stroke-width", linewidth)
         .style("stroke", "#000")
         .style("fill", d => {
@@ -457,21 +467,14 @@ function addInset(features, linearscale, mapcentre, mapscale, padding, svg, name
         .style("fill", "none")
 }
 
-// Check if a feature is in bounds (this is the source of much jank and points
-// to a more fundamental problem with the geojson files that I should fix later)
-function in_bounds(path, feature) {
-    const bounds = path.bounds(feature)
-    if (bounds[0][0] < 0 | bounds[0][1] < 0) {
-    return false
-    }
-    if (bounds[1][0] > width | bounds[1][1] > height) {
-    return false
-    }
-    if (!(bounds.every((point) => point.every((coordinate) => isFinite(coordinate))))) {
-    return false
-    }
-    return true
-};
+// remove extra bounding boxes that the transformation seems to add
+function removeExtraBox(pathString, width, height){
+    const pattern = new RegExp(
+        `M0,0L${width},0L${width},${height}L0,${height}Z`,
+        "i"
+    );
+    return pathString.replace(pattern, "")
+}
 
 function set_palette(el) {
     var map_colours = colours[el.value]
