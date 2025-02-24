@@ -4,6 +4,7 @@ import { mapSettings, dimensions, getMapDataAttributes, legendSettings} from "./
 import { get_data_level } from "../common/utils.js";
 import { d3, colours, msgBox } from "/bundle.js";
 import { data_check } from "/bundle.js";
+import { createTable } from "../common/errorbox.js";
 const check_duplicate_rows = data_check.check_duplicate_rows;
 const DuplicateRow = data_check.DuplicateRow;
 const EcodeParseError = data_check.EcodeParseError;
@@ -69,15 +70,38 @@ function createDataLookup(data){
 
 function downloadAndProcessMapData(file, path, dataLookup, ecodeid, nameid, linearscale, svg, inset, container) {
     d3.json(file).then(map => { 
+        // Keep track of rows matched
+        const usedKeys = new Set();
         const dataFeatures = map.features
             .flatMap(feature => {
                 const matchedData = dataLookup[feature.properties[ecodeid]];
                 if (matchedData) {
+                    usedKeys.add(feature.properties[ecodeid])
                     return { ...feature, data: {...matchedData}};
                 } else {
                     return feature;
                 }
             });
+
+        const unmatchedEcodes = Object.keys(dataLookup)
+            .filter(key => !usedKeys.has(key))
+        if (unmatchedEcodes.length > 0) {
+            console.log(unmatchedEcodes)
+            const lst = document.createElement("ul");
+            for (let r in unmatchedEcodes){
+                const el = document.createElement("li");
+                el.textContent = unmatchedEcodes[r];
+                lst.appendChild(el);
+            }
+            const errorbox = document.createElement('div');
+            const text = document.createElement('p');
+                text.textContent = "You have entered unrecogniased Ecode(s)";
+            errorbox.appendChild(text);
+            errorbox.appendChild(lst);
+            msgBox("Unrecognised Ecode(s)", errorbox);
+            container.innerHTML = "";
+            container.innerHTML = "";
+        }
 
         // Make tooltip
         const tooltip = document.createElement("div");
