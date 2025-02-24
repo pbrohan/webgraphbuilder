@@ -12,6 +12,7 @@ export default function msgBox(title, contents, status) {
     <div class = "msg-box-title">
         ${title}
     </div>
+    <div class = "msg-box-container">
     <div class = "msg-box-body" id = "msg-box-body">
     </div>
     <div class = "msg-box-body">
@@ -19,6 +20,7 @@ export default function msgBox(title, contents, status) {
     <button type = "submit" data-prevent-double-click="true" class="msg-box-button" data-module="govuk-button" id="msgbox-ok">
      Dismiss 
     </button>
+    </div>
     </div>
     `
     // bad

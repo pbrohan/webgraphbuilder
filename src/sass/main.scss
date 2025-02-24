@@ -28,6 +28,11 @@
     z-index: 16; // Needs to be on top of tui grid line at z-index 15
 }
 
+.msg-box-container {
+    overflow: scroll;
+    max-height: calc(100vh - 250px);
+}
+
 .msg-box  table {
     width: 100%;
     border-collapse: collapse;
