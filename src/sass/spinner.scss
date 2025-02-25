@@ -4,9 +4,9 @@
 .lds-ring {
   color: black;
   left: calc(50% - 40px);
-  top: calc(50% - 40px);
+  top: -400px;
   display: inline-block;
-  position: absolute;
+  position: relative;
   width: 80px;
   height: 80px;
   z-index: 15;

@@ -22,6 +22,11 @@ expand to accommodate the number of rows you have.</p>
 
 <details class="table-holder-details">
   <summary class="table-holder">Show input table</summary>
+  {{ govukButton({
+  id: "grid-clear",
+  text: "Clear Table",
+  preventDoubleClick: true
+}) }}
  <div id = 'grid'></div>
 </details>
 

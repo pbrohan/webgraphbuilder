@@ -29,6 +29,10 @@ export function add_grid(container, build_graph){
     });
 
     data_table.on('afterChange', function() { build_graph(); })
+
+    document.getElementById("grid-clear").addEventListener("click", () => {
+        data_table.clear()
+        build_graph();})
 }
 
 export function get_grid() {

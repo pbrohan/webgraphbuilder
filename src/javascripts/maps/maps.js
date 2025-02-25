@@ -343,6 +343,8 @@ export function make_map_if_data(width = dimensions.w + dimensions.marginLeft,
         draw_map(
             document.getElementById('map'), width, height, ...state
         );
+    } else {
+        document.getElementById('map').innerHTML = "";
     };
 }
 
