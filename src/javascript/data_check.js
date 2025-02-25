@@ -34,7 +34,9 @@ function check_duplicate_rows(data, index){
     const map = new Map();
     const duplicates = [];
     for (let d of data) {
-        keys.push(d[index])
+        if (d[index].trim() != "") {
+            keys.push(d[index])
+        }
     }
     keys.forEach(item => {
         const t = item.trim()

@@ -56,8 +56,12 @@ function createSvgElement(width, height) {
 
 // Helper: create lookup table from grid data
 function createDataLookup(data){
+    console.log(data)
     return Object.fromEntries(
-        data.map(line => [
+        data.filter(line => Object.values(line).some(value => 
+            typeof value === 'string' ? value.trim() !== "" : 
+            false)) // Ignore blank lines
+        .map(line => [
             line.ecode.trim(),
             Object.fromEntries(
                 Object.entries(line)
@@ -98,7 +102,7 @@ function downloadAndProcessMapData(file, path, dataLookup, ecodeid, nameid, line
             }
             const errorbox = document.createElement('div');
             const text = document.createElement('p');
-                text.textContent = "You have entered unrecogniased Ecode(s)";
+                text.textContent = "You have entered unrecognised Ecode(s)";
             errorbox.appendChild(text);
             errorbox.appendChild(lst);
             msgBox("Unrecognised Ecode(s)", errorbox);
@@ -274,6 +278,7 @@ export function draw_map(container, width, height, data, la_level, data_year, in
                                         height)
     const svg = createSvgElement(width, height);
     const dataLookup = createDataLookup(data);
+    console.log(dataLookup);
     container.innerHTML = "";
     // Validate data
     try {
