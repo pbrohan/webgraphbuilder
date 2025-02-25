@@ -5,6 +5,7 @@ import { get_data_level } from "../common/utils.js";
 import { d3, colours, msgBox } from "/bundle.js";
 import { data_check } from "/bundle.js";
 import { createTable } from "../common/errorbox.js";
+import { add_spinner } from "../common/spinner.js";
 const check_duplicate_rows = data_check.check_duplicate_rows;
 const DuplicateRow = data_check.DuplicateRow;
 const EcodeParseError = data_check.EcodeParseError;
@@ -69,6 +70,8 @@ function createDataLookup(data){
 }
 
 function downloadAndProcessMapData(file, path, dataLookup, ecodeid, nameid, linearscale, svg, inset, container) {
+    // Make loader to wait for map download
+    add_spinner(container);
     d3.json(file).then(map => { 
         // Keep track of rows matched
         const usedKeys = new Set();
@@ -100,9 +103,7 @@ function downloadAndProcessMapData(file, path, dataLookup, ecodeid, nameid, line
             errorbox.appendChild(lst);
             msgBox("Unrecognised Ecode(s)", errorbox);
             container.innerHTML = "";
-            container.innerHTML = "";
         }
-
         // Make tooltip
         const tooltip = document.createElement("div");
         tooltip.classList.add("map-tooltip");
@@ -147,6 +148,8 @@ function downloadAndProcessMapData(file, path, dataLookup, ecodeid, nameid, line
                 tooltip
             );
         }
+    // Remove loading spinner
+    document.getElementById("spinner").remove();
     });
 }
 

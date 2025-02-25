@@ -1,6 +1,7 @@
 @use "../../node_modules/govuk-frontend/dist/govuk/index.scss" as govuk with (
     $govuk-font-family: arial
 );
+@use "./spinner.scss";
 
 @import url("https://uicdn.toast.com/grid/latest/tui-grid.css");
 
@@ -163,6 +164,7 @@ div.graph-header > div.govuk-form-group {
     padding: 0.2em;
     max-width: 300px;
     border: 2px solid black;
+    opacity: 0;
 }
 
 .table-holder-details {
@@ -186,4 +188,8 @@ div.graph-header > div.govuk-form-group {
 
 .settings-checkbox {
     margin-top: 25px;
+}
+
+.graph-container{
+    position: relative;
 }
