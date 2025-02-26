@@ -7,24 +7,13 @@ let data_table = null;
  * Probably want to move to bundle
  * @param {HTMLElement} container 
  */
-export function add_grid(container, build_graph){
+export function add_grid(container, columns, build_graph){
     data_table = new Grid({
         usageStatistics: false, // Don't use google analytics
         el: container,
         scrollX : false,
         scrollY : true,
-        columns : [
-            {
-                header : 'Ecode',
-                name : 'ecode',
-                editor : 'text',
-            },
-            {
-                header : 'Data',
-                name : 'data',
-                editor : 'text'
-            },
-        ],
+        columns : columns,
         data: []
     });
 

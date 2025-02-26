@@ -13,6 +13,7 @@ import { graph_tools } from "/bundle.js";
 const VerticalLegend = graph_tools.VerticalLegend;
 const download_svg = graph_tools.download_svg
 
+
 export function get_map_page_state() {
     const data = get_grid().getData();
     const la_level = document.getElementById('geo-level').value;
@@ -354,7 +355,19 @@ export function make_map_if_data(width = dimensions.w + dimensions.marginLeft,
 }
 
 export function initMapPage() {
-    add_grid(document.getElementById('grid'), make_map_if_data);
+    add_grid(document.getElementById('grid'),
+    [
+        {
+            header : 'Ecode',
+            name : 'ecode',
+            editor : 'text',
+        },
+        {
+            header : 'Data',
+            name : 'data',
+            editor : 'text'
+        },
+    ], make_map_if_data);
 
     const map_settings = document.getElementById("map-settings");
     const org_list = document.getElementById("org_list");

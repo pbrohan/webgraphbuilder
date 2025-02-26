@@ -1,0 +1,77 @@
+---
+layout: govuk.njk
+servicetitle: Peter's Graph Builder
+pagetitle: Bar Chart
+---
+    {% from "govuk/components/radios/macro.njk" import govukRadios %}
+    {% from "govuk/components/button/macro.njk" import govukButton %}
+<h3> Instructions </h3>
+<p>Click "Show table" to show the input table. Click on the table and paste your
+ data into it. Your data should consist of up to five columns of data. This will
+  be plotted as a grouped bar chart</p>
+
+<details class="table-holder-details">
+  <summary class="table-holder">Show input table</summary>
+  {{ govukButton({
+  id: "grid-clear",
+  text: "Clear Table",
+  preventDoubleClick: true
+}) }}
+ <div id = 'grid'></div>
+</details>
+
+<div id = 'settings-pane'>
+  <div id = 'bar-settings-container' class = 'settings-container'>
+    <form id = "bar-settings">
+    <div id = 'stacked-radio' class = "settings-radio">
+      {{ govukRadios({
+        classes: "govuk-radios--inline",
+        name: "groupDataMethod",
+        fieldset: {
+            legend: {
+                text: "Grouping Method",
+                isPageHeading: false,
+                classes: "govuk-fieldset__legend--l"
+            }
+        },
+        items: [
+          {
+            value: "group",
+            text: "Group",
+            checked: true
+          },
+          { value: "stack",
+            text: "Stack"  
+          },
+          { value: "stack100",
+            text: "100% Stack"}
+        ]
+      }) }}
+    </div>
+  </form>
+  </div>
+  <div id = 'palette' class="palette">
+    {# MHCLG is default selection #}
+    {% for colour, values in colours.MHCLG.light %}
+      <div class = "palette-cell">
+        <div class = "palette-preview" style="background-color: rgb({{values[0]}}, {{values[1]}}, {{values[2]}});"></div><span class = "palette-text">{{colour}}</span></div>
+    {% endfor %} 
+  </div>
+</div>
+
+{{ govukButton({
+  id: "graph-dl",
+  text: "Download Graph",
+  preventDoubleClick: true
+}) }}
+
+<div id = 'bar' class = 'graph-container'></div>
+
+
+
+
+<script type = "module">
+  import('/javascripts/barchart/barchart.js').then(module => {
+    module.initBarChartPage()
+  })
+</script>
