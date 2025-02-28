@@ -326,8 +326,11 @@ export function draw_map(container, width, height, data, la_level, data_year, in
         const palette = get_palette(org_list);
         // For now everyone needs to use the light colours
         const palette_size = Object.keys(palette.light).length;
-        console.log(palette_size);
-    console.log(data_check.guess_data_type(data));
+        const palette_elements = [...document.querySelectorAll(".palette-cell")];
+        // This is very inefficient
+        palette_elements.forEach(cell => {
+                cell.classList.remove("palette-cell__disabled");
+            })
     switch(data_check.guess_data_type(data)){
         case 'float':
             scale = d3.scaleSequential(get_table_range(data), 
@@ -353,7 +356,11 @@ export function draw_map(container, width, height, data, la_level, data_year, in
                 Object.values(palette.light).map(
                     colour => `rgb(${colour.join(',')})`
                 ));
-                // Disable the palette ?
+                // soft disable the palette 
+                palette_elements.forEach(cell => {
+                    cell.classList.add("palette-cell__disabled");
+                })
+
             } else {
                 // ordered scale
                 scale = d3.scaleOrdinal([...uniques],

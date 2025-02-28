@@ -142,6 +142,12 @@ div.graph-header > div.govuk-form-group {
     color: white;
 }
 
+.palette-cell__disabled {
+    background-color: govuk.govuk-colour("mid-grey");
+    color: govuk.govuk-colour("dark-grey");
+    cursor: default;
+}
+
 .palette-preview{
     width: 10px;
     height: 10px;
