@@ -34,3 +34,8 @@ function select_palette_colour(el) {
     });
     el.classList.add("palette-cell__selected");
 }
+
+export function get_palette(el){
+    const graph_colours = colours[el.value];
+    return graph_colours
+}

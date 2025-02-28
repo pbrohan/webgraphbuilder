@@ -1,5 +1,5 @@
 import { add_grid, get_grid, get_table_range } from "../common/grid.js";
-import { set_palette } from "../common/palette.js";
+import { set_palette, get_palette } from "../common/palette.js";
 import { mapSettings, dimensions, getMapDataAttributes, legendSettings} from "./config.js";
 import { get_data_level } from "../common/utils.js";
 import { d3, colours, msgBox } from "/bundle.js";
@@ -56,7 +56,6 @@ function createSvgElement(width, height) {
 
 // Helper: create lookup table from grid data
 function createDataLookup(data){
-    console.log(data)
     return Object.fromEntries(
         data.filter(line => Object.values(line).some(value => 
             typeof value === 'string' ? value.trim() !== "" : 
@@ -73,7 +72,7 @@ function createDataLookup(data){
     );
 }
 
-function downloadAndProcessMapData(file, path, dataLookup, ecodeid, nameid, linearscale, svg, inset, container) {
+function downloadAndProcessMapData(file, path, dataLookup, ecodeid, nameid, scale, svg, inset, container) {
     // Make loader to wait for map download
     add_spinner(container);
     d3.json(file).then(map => { 
@@ -93,7 +92,6 @@ function downloadAndProcessMapData(file, path, dataLookup, ecodeid, nameid, line
         const unmatchedEcodes = Object.keys(dataLookup)
             .filter(key => !usedKeys.has(key))
         if (unmatchedEcodes.length > 0) {
-            console.log(unmatchedEcodes)
             const lst = document.createElement("ul");
             for (let r in unmatchedEcodes){
                 const el = document.createElement("li");
@@ -115,7 +113,7 @@ function downloadAndProcessMapData(file, path, dataLookup, ecodeid, nameid, line
 
         drawFeatures(dataFeatures,
                 path,
-                linearscale,
+                scale,
                 svg,
                 nameid,
                 tooltip
@@ -127,7 +125,7 @@ function downloadAndProcessMapData(file, path, dataLookup, ecodeid, nameid, line
                 return ecode && ecode.startsWith("E090");
             })
             addInset(londonFeatures,
-                linearscale,
+                scale,
                 mapSettings.london.centre,
                 mapSettings.london.scale,
                 mapSettings.london.padding,
@@ -143,7 +141,7 @@ function downloadAndProcessMapData(file, path, dataLookup, ecodeid, nameid, line
                 return ecode && ecode.startsWith("S12000027");
             })
             addInset(shetlandFeatures,
-                linearscale,
+                scale,
                 mapSettings.shetland.centre,
                 mapSettings.shetland.scale,
                 mapSettings.shetland.padding,
@@ -166,7 +164,7 @@ function removeExtraBox(pathString, width, height){
     return pathString.replace(pattern, "")
 }
 
-function drawFeatures(features, path, linearscale, svg, nameid, tooltip){
+function drawFeatures(features, path, scale, svg, nameid, tooltip){
     svg.append("g")
        .selectAll("path")
        .data(features)
@@ -183,7 +181,7 @@ function drawFeatures(features, path, linearscale, svg, nameid, tooltip){
        .style("stroke", "#000")
        .style("fill", d => {
           if ('data' in d) {
-            return linearscale(d.data.data);
+            return scale(d.data.data);
           } else {
             return "white";
           }
@@ -278,7 +276,6 @@ export function draw_map(container, width, height, data, la_level, data_year, in
                                         height)
     const svg = createSvgElement(width, height);
     const dataLookup = createDataLookup(data);
-    console.log(dataLookup);
     container.innerHTML = "";
     // Validate data
     try {
@@ -321,16 +318,75 @@ export function draw_map(container, width, height, data, la_level, data_year, in
     const { file, nameid, ecodeid } = getMapDataAttributes(data_level, data_year)
 
     // create the scale
-    const linearscale = d3.scaleSequential(get_table_range(data), 
-        d3.interpolate("rgb(0,0,0)", "rgb(" + colour[0] + "," +
-            colour[1] + "," + colour[2] + ")"))
-    
-    downloadAndProcessMapData(file, path, dataLookup, ecodeid, nameid, linearscale, svg, inset, container);
+    let scale;
+    let uniques;
+    // In the future this should be moved to get_map_page_state
+        const ordered = false;
+        const org_list = document.getElementById("org_list");
+        const palette = get_palette(org_list);
+        // For now everyone needs to use the light colours
+        const palette_size = Object.keys(palette.light).length;
+        console.log(palette_size);
+    console.log(data_check.guess_data_type(data));
+    switch(data_check.guess_data_type(data)){
+        case 'float':
+            scale = d3.scaleSequential(get_table_range(data), 
+            d3.interpolate("rgb(0,0,0)", `rgb(${colour.join(',')})`));
+            break;
+        case 'integer':
+            scale = d3.scaleSequential(get_table_range(data),
+            d3.interpolate("rgb(0,0,0)", `rgb(${colour.join(',')})`));
+            break;
+        case 'string':
+            uniques = data_check.get_data_uniques(data);
+            if (uniques.size <= palette_size){
+            // This is definitely discrete. Should:
+            // 1 - Check if there are < 10 levels
+            // 2 - If so ask if they're ordered
+            // 3 - Make a scale based on the palette
+                // palette scale
+                // Get ordinal setting
+                const ordinalSetting = document
+                    .querySelector('input[name="ordinal-state"]:checked').value;
+            if (ordinalSetting == "unordered") {
+                scale = d3.scaleOrdinal([...uniques],
+                Object.values(palette.light).map(
+                    colour => `rgb(${colour.join(',')})`
+                ));
+                // Disable the palette ?
+            } else {
+                // ordered scale
+                scale = d3.scaleOrdinal([...uniques],
+                    Array.from({length: uniques.size}, (_, i) => 
+                        d3.interpolate("rgb(0,0,0)", `rgb(${colour.join(',')})`)((i + 1)/(uniques.size + 1))));
+            }
+            } else {
+                // Message the user and tell them that they have too many levels
+                const lst = document.createElement("ul");
+                const unique_array = [...uniques];
+                for (let r in unique_array){
+                    const el = document.createElement("li");
+                    el.textContent = unique_array[r];
+                    lst.appendChild(el);
+                }
+                console.log(uniques);
+                const errorbox = document.createElement('div');
+                const text = document.createElement('p')
+                    text.textContent = `Cannot graph ordinal data with more than ${palette_size} levels. You have ${uniques.size}.`
+                errorbox.appendChild(text);
+                errorbox.appendChild(lst);
+                msgBox("Too many ordinal levels", errorbox);
+                container.innerHTML = "";
+                return 0;
+            }
+    }
+
+    downloadAndProcessMapData(file, path, dataLookup, ecodeid, nameid, scale, svg, inset, container);
 
     // Append legend
     svg.append("g")
        .attr("transform", `translate(${legendSettings.offset[0]}, ${legendSettings.offset[1]})`)
-       .append(() => VerticalLegend(linearscale, legendSettings.dimensions))
+       .append(() => VerticalLegend(scale, legendSettings.dimensions))
        .call(g => g.selectAll(".tick text")
                    .style('font-size', "1rem")
                    .attr("color", "#0b0c0c")
@@ -358,6 +414,7 @@ export function initMapPage() {
 
     const map_settings = document.getElementById("map-settings");
     const org_list = document.getElementById("org_list");
+    const ordinal_status = document.getElementById("ordinal-settings");
 
     set_palette(org_list, make_map_if_data);
 
@@ -367,6 +424,10 @@ export function initMapPage() {
     })
 
     map_settings.addEventListener("change", (event) => {
+        make_map_if_data();
+    });
+
+    ordinal_status.addEventListener("change", (event) => {
         make_map_if_data();
     });
 

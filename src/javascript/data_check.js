@@ -93,9 +93,9 @@ function guess_data_type(data) {
     // how is there not a builtin for this?
     // Everything is text, int, float or NA. 
 
-    const isNa = str => nas.includes(str.toUpperCase());
-    const isInteger = str => /^-?\d+$/.test(str) ;
-    const isFloat = str => /^-?\d*(\.\d+)?$/.test(str);
+    const isNa = str => nas.includes(str.trim().toUpperCase());
+    const isInteger = str => /^-?\d+$/.test(str.trim()) ;
+    const isFloat = str => /^-?\d*(\.\d+)?$/.test(str.trim());
 
     let allNa = true;
     let allInt = true;
@@ -104,7 +104,7 @@ function guess_data_type(data) {
     for (const str of datacol) {
         if (!nas.includes(str)) {
             allNa = false;
-                if(!isInteger(str)) {
+                if(!isInteger(str) & str.trim() != '') {
                     allInt = false;
                 
                 if (!isFloat(str)) {
@@ -121,11 +121,24 @@ function guess_data_type(data) {
     return 'string';
 }
 
+function get_data_uniques(data) {
+    const datacol = data.map(d => d.data.toString());
+    let values = new Set();
+    for (const str of datacol){
+        let s = str.trim();
+        if (s != '' & !values.has(s)){
+            values.add(s)
+        }
+    }
+    return values
+}
+
 
 const data_check = {
     guess_region_type,
     guess_data_type,
     check_duplicate_rows,
+    get_data_uniques,
     DuplicateRow,
     EcodeParseError
 }

@@ -12,7 +12,8 @@ export const mapSettings = {
 };
 
 export const legendSettings = {
-    offset: [4 * dimensions.marginLeft,
+    //offset: [4 * dimensions.marginLeft,
+    offset:[560,
             dimensions.h * 7 / 10
     ],
     dimensions: {width: 60, height: 200}
@@ -20,17 +21,17 @@ export const legendSettings = {
 
 export const map_loc = "/assets/maps/"
 export const map_data = {
-    "district" : {'2024': {"file": "LAD_2024.geojson",
+    "district" : {'2023': {"file": "LAD_2024.geojson",
                     "nameid": "LAD24NM",
                     "ecodeid": "LAD24CD"},
-                '2023': {"file": "LAD_2024.geojson",
+                '2022': {"file": "LAD_2024.geojson",
                         "nameid": "LAD24NM",
                         "ecodeid": "LAD24CD"},
                 },
-    "county" : {'2024': {"file": "CTY_2023.geojson",
+    "county" : {'2023': {"file": "CTY_2023.geojson",
                         "nameid": "CTYUA23NM",
                         "ecodeid": "CTYUA23CD"},
-                '2023': {"file": "CTY_2023.geojson",
+                '2022': {"file": "CTY_2023.geojson",
                     "nameid": "CTYUA23NM",
                     "ecodeid": "CTYUA23CD"},
                 }
