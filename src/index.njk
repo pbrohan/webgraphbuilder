@@ -1,155 +1,21 @@
 ---
 layout: govuk.njk
 servicetitle: Peter's Graph Builder
-pagetitle: Home Page
+pagetitle: Home
 ---
-<!--link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" /-->
-    {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
-    {% from "govuk/components/radios/macro.njk" import govukRadios %}
-    {% from "govuk/components/button/macro.njk" import govukButton %}
-    {% from "govuk/components/select/macro.njk" import govukSelect %}
-<h3> Instructions </h3>
-<p>Click "Show table" to show the input table. Click on the table and paste your data into it. Your
-data should consist of one column which is Ecodes (I will write a better explanation
-later) and one column of values for those Ecodes. The table will automatically 
-expand to accommodate the number of rows you have.</p>
+<h2 class = "govuk-heading-m">Beep</h2>
 
-<p>The page will then generate a map of the UK with each LA you have entered a 
-  valid ecode for coloured in according to the number you have written in the 
-  second column. Currently all other behaviours are unsupported and there are 
-  probably many bugs.
-</p>
-
-
-<details class="table-holder-details">
-  <summary class="table-holder">Show input table</summary>
-  <div id = 'data-settings'>
-    <div id = 'data-settings-discrete' class = 'map-data-settings'>
-      <div style="display: flex">
-
-      <div class = "govuk-body-m map-ordinal-display-label">Treat ordinal data as:</div>
-      <form id = "ordinal-settings">
-      {{ govukRadios({
-        classes: "govuk-radios--inline govuk-radios--small map-ordinal-radios",
-        name: "ordinal-state",
-        items: [
-          {
-            value: "unordered",
-            text: "Unordered",
-            checked: true
-          },
-          {
-            value: "ordered",
-            text: "Ordered"
-          }
-        ]
-      })
-
-      }}
-      </div>
-      </form>
-      <div>
-      {{ govukButton({
-      id: "grid-clear",
-      text: "Clear Table",
-      preventDoubleClick: true
-      }) }}
+<div class = "govuk-grid-row">
+    <div class = "govuk-grid-column-one-third">
+        <a href = "{{ '/map/' | url}}" class = "govuk-link">Maps</a>
     </div>
-
-  </div>
+    <div class = "govuk-grid-column-one-third">
+        <a href = "{{ '/interactivemap/' | url}}" class = "govuk-link">Interactive Map</a>
+    </div>
 </div>
- <div id = 'grid'></div>
-</details>
-
-<div id = 'settings-pane'>
-  <div id = 'map-settings-container' class = 'settings-container'>
-  <form id = "map-settings">
-    <div id = 'level-menu'>
-      {{ govukSelect({
-        id: "geo-level",
-        name: "geo-level",
-        label: {
-          text: "LA Level"
-        },
-        items: [
-          {
-            value: "county",
-            text: "County",
-            selected: true
-          },
-          {
-            value: "district",
-            text: "District"
-          }
-        ]
-      }) }}
-    </div>
-    <div id = 'year-menu'>
-      {{ govukSelect({
-        id: "map-year",
-        name: "map-year",
-        label: {
-          text: "Data Financial Year"
-        },
-        items: [
-          {
-            value: "2023",
-            text: "2023/24",
-            selected: true
-          },
-          {
-            value: "2022",
-            text: "2022/23"
-          }
-        ]
-      }) }}
-    </div>
-    <div id = 'london-checkbox' class = "settings-checkbox">
-      {{ govukCheckboxes({
-        name: "london-inset",
-        items: [
-          {
-            value: "use-inset",
-            text: "London inset"
-          }
-        ]
-      }) }}
-    </div>
-    <div id = 'shetland-checkbox' class = "settings-checkbox">
-      {{ govukCheckboxes({
-        name: "shetland-inset",
-        items: [
-          {
-            value: "use-inset",
-            text: "Shetland inset"
-          }
-        ]
-      }) }}
-    </div>
-  </form>
-  </div>
-  <div id = 'palette' class="palette">
-    {# MHCLG is default selection #}
-    {% for colour, values in colours.MHCLG.light %}
-      <div class = "palette-cell">
-        <div class = "palette-preview" style="background-color: rgb({{values[0]}}, {{values[1]}}, {{values[2]}});"></div><span class = "palette-text">{{colour}}</span></div>
-    {% endfor %} 
-  </div>
-</div>
-
-{{ govukButton({
-  id: "map-dl",
-  text: "Download Graph",
-  preventDoubleClick: true
-}) }}
-
-<div id = 'map' class = 'graph-container'></div>
-
-
-
 
 <script type = "module">
-  import('./javascripts/maps/maps.js').then(module => {
-    module.initMapPage()
+  import('/javascripts/home/home.js').then(module => {
+    module.initHomePage()
   })
 </script>

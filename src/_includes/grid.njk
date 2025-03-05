@@ -1,0 +1,44 @@
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{%macro inputgrid() %}
+<details class="table-holder-details">
+  <summary class="table-holder">Show input table</summary>
+  <div id = 'data-settings'>
+    <div id = 'data-settings-discrete' class = 'map-data-settings'>
+      <div style="display: flex">
+
+      <div class = "govuk-body-m map-ordinal-display-label">Treat ordinal data as:</div>
+      <form id = "ordinal-settings">
+      {{ govukRadios({
+        classes: "govuk-radios--inline govuk-radios--small map-ordinal-radios",
+        name: "ordinal-state",
+        items: [
+          {
+            value: "unordered",
+            text: "Unordered",
+            checked: true
+          },
+          {
+            value: "ordered",
+            text: "Ordered"
+          }
+        ]
+      })
+
+      }}
+      </div>
+      </form>
+      <div>
+      {{ govukButton({
+      id: "grid-clear",
+      text: "Clear Table",
+      preventDoubleClick: true
+      }) }}
+    </div>
+
+  </div>
+</div>
+ <div id = 'grid'></div>
+</details>
+{% endmacro %}

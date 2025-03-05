@@ -38,10 +38,10 @@ export const map_data = {
 }
 
 export function getMapDataAttributes(data_level, data_year) {
-    const map_info = map_data[data_level][data_year];
-    return {
-        file: map_loc + map_info.file,
-        nameid: map_info.nameid,
-        ecodeid: map_info.ecodeid
-    };
+  const map_info = map_data[data_level][data_year];
+  return {
+    file: map_loc + map_info.file,
+    nameid: map_info.nameid,
+    ecodeid: map_info.ecodeid,
+  };
 }
