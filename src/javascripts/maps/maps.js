@@ -369,7 +369,6 @@ export function draw_map(
   let scale;
   let uniques;
   // In the future this should be moved to get_map_page_state
-  const ordered = false;
   const org_list = document.getElementById("org_list");
   const palette = get_palette(org_list);
   // For now everyone needs to use the light colours

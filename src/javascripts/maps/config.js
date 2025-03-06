@@ -19,6 +19,10 @@ export const legendSettings = {
     dimensions: {width: 60, height: 200}
 }
 
+export const interactiveLegendSettings = {
+    width: 200
+}
+
 export const map_loc = "/assets/maps/"
 export const map_data = {
     "district" : {'2023': {"file": "LAD_2024.geojson",

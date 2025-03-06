@@ -18,3 +18,9 @@ export function get_data_level(dataLookup, la_level) {
 
   return data_level;
 }
+
+export function resizeSVG(svg, paddingLeft = 0, paddingTop = 0) {
+    let bbox = svg.getBBox(); // Get the bounding box of the SVG's contents
+    svg.setAttribute("width", bbox.width + paddingLeft);
+    svg.setAttribute("height", bbox.height + paddingTop);
+}
