@@ -1,6 +1,8 @@
-import { leaflet, colours, data_check, msgBox } from "/bundle.js";
+import { leaflet, colours, data_check, msgBox, d3} from "/bundle.js";
+// Not thrilled with the d3 import here. It's only used for d3.scaleSequential
+// but tbf the entire bundle is already imported
 import { get_data_level } from "../common/utils.js"
-import { set_palette } from "../common/palette.js";
+import { set_palette, get_palette } from "../common/palette.js";
 import { add_grid, get_grid, get_table_range } from "../common/grid.js";
 import { createDataLookup } from "./maps.js";
 import { createTable } from "../common/errorbox.js";
@@ -44,17 +46,112 @@ async function draw_interactive_map(
         reset_map(map, legend)
         return -1
     }
-    console.log("boop");
-    leaflet.geoJson(dataFeatures).addTo(map)
+    const scale = map_choose_scale_function(colour, data);
+    if (scale == -1) {
+        reset_map(map, legend)
+        return -1
+    }
+    leaflet.geoJson(dataFeatures, {style: leaflet_style(scale)}).addTo(map)
 }
 
-function leaflet_style() {
-    return {fillColor: "blue",
+export function map_choose_scale_function(colour, data){
+      // create the scale
+  let scale;
+  let uniques;
+  // In the future this should be moved to get_map_page_state
+  const org_list = document.getElementById("org_list");
+  const palette = get_palette(org_list);
+  // For now everyone needs to use the light colours
+  const palette_size = Object.keys(palette.light).length;
+  const palette_elements = [...document.querySelectorAll(".palette-cell")];
+  // This is very inefficient
+  palette_elements.forEach((cell) => {
+    cell.classList.remove("palette-cell__disabled");
+  });
+  switch (data_check.guess_data_type(data)) {
+    case "float":
+      scale = d3.scaleSequential(
+        get_table_range(data),
+        d3.interpolate("rgb(0,0,0)", `rgb(${colour.join(",")})`)
+      );
+      break;
+    case "integer":
+      scale = d3.scaleSequential(
+        get_table_range(data),
+        d3.interpolate("rgb(0,0,0)", `rgb(${colour.join(",")})`)
+      );
+      break;
+    case "string":
+      uniques = data_check.get_data_uniques(data);
+      if (uniques.size <= palette_size) {
+        // This is definitely discrete. Should:
+        // 1 - Check if there are < 10 levels
+        // 2 - If so ask if they're ordered
+        // 3 - Make a scale based on the palette
+        // palette scale
+        // Get ordinal setting
+        const ordinalSetting = document.querySelector(
+          'input[name="ordinal-state"]:checked'
+        ).value;
+        if (ordinalSetting == "unordered") {
+          scale = d3.scaleOrdinal(
+            [...uniques],
+            Object.values(palette.light).map(
+              (colour) => `rgb(${colour.join(",")})`
+            )
+          );
+          // soft disable the palette
+          palette_elements.forEach((cell) => {
+            cell.classList.add("palette-cell__disabled");
+          });
+        } else {
+          // ordered scale
+          scale = d3.scaleOrdinal(
+            [...uniques],
+            Array.from({ length: uniques.size }, (_, i) =>
+              d3.interpolate(
+                "rgb(0,0,0)",
+                `rgb(${colour.join(",")})`
+              )((i + 1) / (uniques.size + 1))
+            )
+          );
+        }
+      } else {
+        // Message the user and tell them that they have too many levels
+        const lst = document.createElement("ul");
+        const unique_array = [...uniques];
+        for (let r in unique_array) {
+          const el = document.createElement("li");
+          el.textContent = unique_array[r];
+          lst.appendChild(el);
+        }
+        const errorbox = document.createElement("div");
+        const text = document.createElement("p");
+        text.textContent = `Cannot graph ordinal data with more than ${palette_size} levels. You have ${uniques.size}.`;
+        errorbox.appendChild(text);
+        errorbox.appendChild(lst);
+        msgBox("Too many ordinal levels", errorbox);
+        return -1;
+      }
+  }
+  return scale
+}
+
+
+function leaflet_style(scale) {
+    return function(feature) {
+        let fill;
+        if ("data" in feature) {
+            fill = scale(feature.data.data)
+        } else {
+            fill = "white"
+        }
+        return {fillColor: fill,
             weight: 1,
             opactity: 1,
             color: "black",
             dashArray: "0",
-            fillOpacity: 0.7
+            fillOpacity: 0.7}
     }
 }
 
