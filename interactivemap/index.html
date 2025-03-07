@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" class="govuk-template">
+  <head>
+    <meta charset="utf-8">
+    <title>
+Peter's Graph Builder
+</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#0b0c0c">
+
+    
+      <link rel="icon" sizes="48x48" href="/webgraphbuilder/assets/images/favicon.ico">
+      <link rel="icon" sizes="any" href="/webgraphbuilder/assets/images/favicon.svg" type="image/svg+xml">
+      <link rel="mask-icon" href="/webgraphbuilder/assets/images/govuk-icon-mask.svg" color="#0b0c0c">
+      <link rel="apple-touch-icon" href="/webgraphbuilder/assets/images/govuk-icon-180.png">
+      <link rel="manifest" href="/webgraphbuilder/assets/manifest.json">
+    
+
+    
+
+  <link rel="stylesheet" href="/webgraphbuilder/stylesheets/main.css">
+
+    
+  </head>
+  <body class="govuk-template__body">
+    <script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
+    
+
+    
+      <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
+
+    
+
+    
+<header class="govuk-header" data-module="govuk-header">
+  <div class="govuk-header__container govuk-width-container graph-header">
+    <div class="govuk-header__logo">
+      <a href="#" class="govuk-header__link govuk-header__link--homepage">
+        Peter&#39;s Graph Builder
+      </a>
+    </div>
+    
+      
+      
+      
+    
+
+    
+
+
+
+<div class="govuk-form-group">
+  
+
+
+
+  <select class="govuk-select" id="org_list" name="org_list">
+  
+    
+    <option value="MHCLG">MHCLG</option>
+    
+  
+  </select>
+
+</div>
+
+  </div>
+</header>
+
+
+    
+      <div class="govuk-width-container">
+        
+        <main class="govuk-main-wrapper" id="main-content">
+          
+  <h1 class="govuk-heading-xl">Interactive Map</h1>
+    
+
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+            integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+            crossorigin=""/>
+<p class = "govuk-body">For a printable/publishable map, please go <a href = "/webgraphbuilder/map/" class = "govuk-link">here</a>.
+This page will make a quick interactive graph, but the output is not appropriate for wider sharing. If you would like a 
+custom map, you will need to make one using your programming language of choice.</p>
+
+
+<details class="table-holder-details">
+  <summary class="table-holder">Show input table</summary>
+  <div id = 'data-settings'>
+    <div id = 'data-settings-discrete' class = 'map-data-settings'>
+      <div style="display: flex">
+
+      <div class = "govuk-body-m map-ordinal-display-label">Treat ordinal data as:</div>
+      <form id = "ordinal-settings">
+      
+
+
+
+<div class="govuk-form-group">
+
+  <div class="govuk-radios govuk-radios--inline govuk-radios--small map-ordinal-radios" data-module="govuk-radios">
+    
+    
+      
+  
+    
+    
+    
+    <div class="govuk-radios__item">
+      <input class="govuk-radios__input" id="ordinal-state" name="ordinal-state" type="radio" value="unordered" checked>
+      <label class="govuk-label govuk-radios__label" for="ordinal-state">
+        Unordered
+      </label>
+      
+    </div>
+    
+  
+    
+      
+  
+    
+    
+    
+    <div class="govuk-radios__item">
+      <input class="govuk-radios__input" id="ordinal-state-2" name="ordinal-state" type="radio" value="ordered">
+      <label class="govuk-label govuk-radios__label" for="ordinal-state-2">
+        Ordered
+      </label>
+      
+    </div>
+    
+  
+    
+    
+  </div>
+
+</div>
+
+      </div>
+      </form>
+      <div>
+      
+  
+    
+  
+
+<button type="submit" data-prevent-double-click="true" class="govuk-button" data-module="govuk-button" id="grid-clear">
+  Clear Table
+</button>
+
+    </div>
+
+  </div>
+</div>
+ <div id = 'grid'></div>
+</details>
+
+
+<div id = 'settings-pane'>
+  <div id = 'map-settings-container' class = 'settings-container'>
+  <form id = "map-settings">
+    <div id = 'level-menu'>
+      
+
+
+
+<div class="govuk-form-group">
+  <label class="govuk-label" for="geo-level">
+    LA Level
+  </label>
+
+
+
+  <select class="govuk-select" id="geo-level" name="geo-level">
+  
+    
+    <option value="county" selected>County</option>
+    
+  
+    
+    <option value="district">District</option>
+    
+  
+  </select>
+
+</div>
+
+    </div>
+    <div id = 'year-menu'>
+      
+
+
+
+<div class="govuk-form-group">
+  <label class="govuk-label" for="map-year">
+    Data Financial Year
+  </label>
+
+
+
+  <select class="govuk-select" id="map-year" name="map-year">
+  
+    
+    <option value="2023" selected>2023/24</option>
+    
+  
+    
+    <option value="2022">2022/23</option>
+    
+  
+  </select>
+
+</div>
+
+    </div>
+    
+  </form>
+  </div>
+  <div id = 'palette' class="palette">
+    
+    
+      <div class = "palette-cell">
+        <div class = "palette-preview" style="background-color: rgb(255, 93, 136);"></div><span class = "palette-text">pink</span></div>
+    
+      <div class = "palette-cell">
+        <div class = "palette-preview" style="background-color: rgb(221, 50, 48);"></div><span class = "palette-text">red</span></div>
+    
+      <div class = "palette-cell">
+        <div class = "palette-preview" style="background-color: rgb(250, 163, 50);"></div><span class = "palette-text">orange</span></div>
+    
+      <div class = "palette-cell">
+        <div class = "palette-preview" style="background-color: rgb(154, 184, 60);"></div><span class = "palette-text">green</span></div>
+    
+      <div class = "palette-cell">
+        <div class = "palette-preview" style="background-color: rgb(8, 179, 213);"></div><span class = "palette-text">blue</span></div>
+    
+      <div class = "palette-cell">
+        <div class = "palette-preview" style="background-color: rgb(135, 135, 192);"></div><span class = "palette-text">indigo</span></div>
+    
+      <div class = "palette-cell">
+        <div class = "palette-preview" style="background-color: rgb(153, 152, 143);"></div><span class = "palette-text">grey</span></div>
+     
+  </div>
+</div>
+
+
+<div id = "map" class = "interactive-map"></div>
+
+<script type = "module">
+  import('/webgraphbuilder/bundle.js').then(module => {
+    module.initInteractiveMapPage()
+  })
+</script>
+
+
+        </main>
+      </div>
+    
+
+    
+      <footer class="govuk-footer">
+  <div class="govuk-width-container">
+    
+    <div class="govuk-footer__meta">
+      <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+        
+        <svg
+          aria-hidden="true"
+          focusable="false"
+          class="govuk-footer__licence-logo"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 483.2 195.7"
+          height="17"
+          width="41"
+        >
+          <path
+            fill="currentColor"
+            d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145"
+          />
+        </svg>
+        <span class="govuk-footer__licence-description">
+        
+          All content is available under the
+          <a
+            class="govuk-footer__link"
+            href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+            rel="license"
+          >Open Government Licence v3.0</a>, except where otherwise stated
+        
+        </span>
+      </div>
+      <div class="govuk-footer__meta-item">
+        <a
+          class="govuk-footer__link govuk-footer__copyright-logo"
+          href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/"
+        >
+        
+          © Crown copyright
+        
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+    
+
+    
+  
+  <script type = "module">
+    import {initAll} from "/webgraphbuilder/bundle.js";
+    initAll()
+  </script>
+
+  </body>
+</html>
