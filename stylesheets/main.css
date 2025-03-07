@@ -9294,3 +9294,12 @@ div.graph-header > div.govuk-form-group {
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
 }
+
+.graph-preview-grid {
+  text-align: center;
+}
+
+.graph-preview {
+  width: 200px;
+  border: 2px black solid;
+}
