@@ -1,5 +1,4 @@
 node_modules/
 output/
-src/assets/*
 src/stylesheets/*
 */.DS_Store
