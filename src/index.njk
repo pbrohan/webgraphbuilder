@@ -3,14 +3,18 @@ layout: govuk.njk
 servicetitle: Peter's Graph Builder
 pagetitle: Home
 ---
-<h2 class = "govuk-heading-m">Beep</h2>
+<h2 class = "govuk-heading-m">Choose a graph to make</h2>
 
-<div class = "govuk-grid-row">
+<div class = "govuk-grid-row graph-preview-grid">
     <div class = "govuk-grid-column-one-third">
-        <a href = "{{ urlPrefix }}/map/" class = "govuk-link">Maps</a>
+        <a href = "{{ urlPrefix }}/map/" class = "govuk-link">
+        <img src = "{{ urlPrefix }}/assets/images/home/print_map.jpg" class="graph-preview"/> <br/>
+        Printable map</a>
     </div>
     <div class = "govuk-grid-column-one-third">
-        <a href = "{{ urlPrefix }}/interactivemap/" class = "govuk-link">Interactive Map</a>
+        <a href = "{{ urlPrefix }}/interactivemap/" class = "govuk-link">
+        <img src = "{{ urlPrefix }}/assets/images/home/interactive_map.jpg" class="graph-preview"/> <br/>
+        Interactive Map</a>
     </div>
 </div>
 
