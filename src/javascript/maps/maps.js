@@ -33,6 +33,7 @@ export function get_map_page_state() {
   );
   // Check that the colour name is valid, else pick the primary colour
   let colour;
+  let colour_pair = [0, 0, 0];
   if (colour_selected) {
     if (
       Object.keys(colours[org_list.value].light).includes(
@@ -40,6 +41,7 @@ export function get_map_page_state() {
       )
     ) {
       colour = colours[org_list.value].light[colour_selected.textContent];
+      colour_pair = colours[org_list.value].pairs_light[colour_selected.textContent]
     } else {
       colour = colours[org_list.value].primary;
     }
@@ -47,7 +49,7 @@ export function get_map_page_state() {
     colour = colours[org_list.value].primary;
   }
 
-  return [data, la_level, data_year, inset, colour];
+  return [data, la_level, data_year, inset, colour, colour_pair];
 }
 
 function createProjection(centre, scale, clipWidth, clipHeight) {
@@ -288,7 +290,8 @@ export function draw_map(
   la_level,
   data_year,
   inset,
-  colour
+  colour,
+  colour_pair
 ) {
   const path = createProjection(
     mapSettings.default.centre,
@@ -309,7 +312,7 @@ export function draw_map(
   }
   const { file, nameid, ecodeid } = getMapDataAttributes(data_level, data_year);
 
-  let scale = map_choose_scale_function(colour, data);
+  let scale = map_choose_scale_function(colour, colour_pair, data);
   if (scale == -1) {
     container.innerHTML = "";
     return -1

@@ -43,8 +43,8 @@ export function get_grid() {
 }
 
 export function get_table_range(data) {
-  var min = 0,
-    max = 0;
+  var min = Infinity,
+    max = -Infinity;
   for (let d in data) {
     let val = parseFloat(data[d].data);
     if (val < min) {

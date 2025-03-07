@@ -9,7 +9,7 @@ const check_duplicate_rows = data_check.check_duplicate_rows;
 const DuplicateRow = data_check.DuplicateRow;
 const EcodeParseError = data_check.EcodeParseError;
 
-export function map_choose_scale_function(colour, data){
+export function map_choose_scale_function(colour, colour_pair, data){
       // create the scale
   let scale;
   let uniques;
@@ -27,13 +27,13 @@ export function map_choose_scale_function(colour, data){
     case "float":
       scale = d3.scaleSequential(
         get_table_range(data),
-        d3.interpolate("rgb(0,0,0)", `rgb(${colour.join(",")})`)
+        d3.interpolate(`rgb(${colour_pair.join(",")})`, `rgb(${colour.join(",")})`)
       );
       break;
     case "integer":
       scale = d3.scaleSequential(
         get_table_range(data),
-        d3.interpolate("rgb(0,0,0)", `rgb(${colour.join(",")})`)
+        d3.interpolate(`rgb(${colour_pair.join(",")})`, `rgb(${colour.join(",")})`)
       );
       break;
     case "string":
@@ -65,7 +65,7 @@ export function map_choose_scale_function(colour, data){
             [...uniques],
             Array.from({ length: uniques.size }, (_, i) =>
               d3.interpolate(
-                "rgb(0,0,0)",
+                `rgb(${colour_pair.join(",")})`,
                 `rgb(${colour.join(",")})`
               )((i + 1) / (uniques.size + 1))
             )

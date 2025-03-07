@@ -1,4 +1,4 @@
 node_modules/
 output/
 src/stylesheets/*
-*/.DS_Store
+**/.DS_Store

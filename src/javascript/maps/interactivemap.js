@@ -27,7 +27,8 @@ async function draw_interactive_map(
     data,
     la_level,
     data_year,
-    colour
+    colour,
+    colour_pair
 ) {
     if (validate_rows(data) == -1) {
         reset_map(map)
@@ -47,7 +48,7 @@ async function draw_interactive_map(
         reset_map(map)
         return -1
     }
-    const scale = map_choose_scale_function(colour, data);
+    const scale = map_choose_scale_function(colour, colour_pair, data);
     if (scale == -1) {
         reset_map(map)
         return -1
@@ -55,7 +56,8 @@ async function draw_interactive_map(
     var info = leaflet.control();
     var geojson;
     geojson = leaflet.geoJson(dataFeatures, {style: leaflet_style(scale),
-                                   onEachFeature: onEachFeature}).addTo(map)
+                                   onEachFeature: onEachFeature,
+                                    smoothFactor: 0.5}).addTo(map)
 
     // Highlighing functions
     function highlightFeature(e){
@@ -149,6 +151,7 @@ function get_interactive_map_page_state() {
         ".palette-cell__selected > .palette-text"
     );
     let colour;
+    let colour_pair = [0,0,0];
     if (colour_selected) {
         if (
             Object.keys(colours[org_list.value].light).includes(
@@ -156,6 +159,7 @@ function get_interactive_map_page_state() {
             )
         ) {
             colour = colours[org_list.value].light[colour_selected.textContent];
+            colour_pair = colours[org_list.value].pairs_light[colour_selected.textContent];
         } else {
             colour = colours[org_list.value].primary;
         }
@@ -163,7 +167,7 @@ function get_interactive_map_page_state() {
         colour = colours[org_list.value].primary;
     }
 
-    return [data, la_level, data_year, colour];
+    return [data, la_level, data_year, colour, colour_pair];
 }
 
 export function initInteractiveMapPage() {
