@@ -1,13 +1,18 @@
 {% extends "govuk/template.njk" %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 
+
+{% set assetPath = urlPrefix + "/assets" %}
+
+
+
 {% block pageTitle %}
 Peter's Graph Builder
 {% endblock %}
 
 {% block head %}
 
-  <link rel="stylesheet" href="/stylesheets/main.css">
+  <link rel="stylesheet" href="{{urlPrefix}}/stylesheets/main.css">
 {% endblock %}
 
 {% block header %}
@@ -47,7 +52,7 @@ Peter's Graph Builder
 {% block bodyEnd %}
   {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
   <script type = "module">
-    import {initAll} from "/bundle.js";
+    import {initAll} from "{{urlPrefix}}/bundle.js";
     initAll()
   </script>
 {% endblock %}  

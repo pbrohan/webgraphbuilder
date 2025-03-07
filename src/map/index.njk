@@ -1,0 +1,46 @@
+---
+layout: govuk.njk
+servicetitle: Peter's Graph Builder
+pagetitle: Map
+---
+<!--link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" /-->
+  {% from "grid.njk" import inputgrid %}
+  {% from "mapsettings.njk" import mapsettings %}
+    {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+    {% from "govuk/components/button/macro.njk" import govukButton %}
+    {% from "govuk/components/select/macro.njk" import govukSelect %}
+<h3> Instructions </h3>
+
+<p class = "govuk-body">This page makes printable and publishable static maps 
+  of your data. To explore your data using an interactive (but not publication-ready)
+  interactive map, please go <a href = "{{urlPrefix}}/interactivemap/" class = "govuk-link">here</a>.
+</p>
+
+<p class = "govuk-body">Click "Show table" to show the input table. Click on the table and paste your data into it. Your
+data should consist of one column which is Ecodes (I will write a better explanation
+later) and one column of values for those Ecodes. The table will automatically 
+expand to accommodate the number of rows you have.</p>
+
+<p class ="govuk-body">The page will then generate a map of the UK with each LA you have entered a 
+  valid ecode for coloured in according to the number you have written in the 
+  second column. Currently all other behaviours are unsupported and there are 
+  probably many bugs.
+</p>
+
+{{ inputgrid() }}
+
+{{ mapsettings(colours, true) }}
+
+{{ govukButton({
+  id: "map-dl",
+  text: "Download Graph",
+  preventDoubleClick: true
+}) }}
+
+<div id = 'map' class = 'graph-container'></div>
+
+<script type = "module">
+  import('{{urlPrefix}}/bundle.js').then(module => {
+    module.initMapPage()
+  })
+</script>

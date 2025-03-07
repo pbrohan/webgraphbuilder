@@ -19,7 +19,11 @@ export const legendSettings = {
     dimensions: {width: 60, height: 200}
 }
 
-export const map_loc = "/assets/maps/"
+export const interactiveLegendSettings = {
+    width: 200
+}
+
+export const map_loc = "__urlPrefix__/assets/maps/" //replaced by rollup on build
 export const map_data = {
     "district" : {'2023': {"file": "LAD_2024.geojson",
                     "nameid": "LAD24NM",
@@ -38,10 +42,10 @@ export const map_data = {
 }
 
 export function getMapDataAttributes(data_level, data_year) {
-    const map_info = map_data[data_level][data_year];
-    return {
-        file: map_loc + map_info.file,
-        nameid: map_info.nameid,
-        ecodeid: map_info.ecodeid
-    };
+  const map_info = map_data[data_level][data_year];
+  return {
+    file: map_loc + map_info.file,
+    nameid: map_info.nameid,
+    ecodeid: map_info.ecodeid,
+  };
 }

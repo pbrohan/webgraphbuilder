@@ -1,0 +1,25 @@
+---
+layout: govuk.njk
+servicetitle: Peter's Graph Builder
+pagetitle: Interactive Map
+---
+{% from "grid.njk" import inputgrid %}
+{% from "mapsettings.njk" import mapsettings %}
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+            integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+            crossorigin=""/>
+<p class = "govuk-body">For a printable/publishable map, please go <a href = "{{urlPrefix}}/map/" class = "govuk-link">here</a>.
+This page will make a quick interactive graph, but the output is not appropriate for wider sharing. If you would like a 
+custom map, you will need to make one using your programming language of choice.</p>
+
+{{inputgrid()}}
+{{mapsettings(colours)}}
+
+<div id = "map" class = "interactive-map"></div>
+
+<script type = "module">
+  import('{{urlPrefix}}/bundle.js').then(module => {
+    module.initInteractiveMapPage()
+  })
+</script>

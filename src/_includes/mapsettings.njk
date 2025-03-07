@@ -1,0 +1,82 @@
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% macro mapsettings(colours, include_insets = false) %}
+<div id = 'settings-pane'>
+  <div id = 'map-settings-container' class = 'settings-container'>
+  <form id = "map-settings">
+    <div id = 'level-menu'>
+      {{ govukSelect({
+        id: "geo-level",
+        name: "geo-level",
+        label: {
+          text: "LA Level"
+        },
+        items: [
+          {
+            value: "county",
+            text: "County",
+            selected: true
+          },
+          {
+            value: "district",
+            text: "District"
+          }
+        ]
+      }) }}
+    </div>
+    <div id = 'year-menu'>
+      {{ govukSelect({
+        id: "map-year",
+        name: "map-year",
+        label: {
+          text: "Data Financial Year"
+        },
+        items: [
+          {
+            value: "2023",
+            text: "2023/24",
+            selected: true
+          },
+          {
+            value: "2022",
+            text: "2022/23"
+          }
+        ]
+      }) }}
+    </div>
+    {% if include_insets %}
+    <div id = 'london-checkbox' class = "settings-checkbox">
+      {{ govukCheckboxes({
+        name: "london-inset",
+        items: [
+          {
+            value: "use-inset",
+            text: "London inset"
+          }
+        ]
+      }) }}
+    </div>
+    <div id = 'shetland-checkbox' class = "settings-checkbox">
+      {{ govukCheckboxes({
+        name: "shetland-inset",
+        items: [
+          {
+            value: "use-inset",
+            text: "Shetland inset"
+          }
+        ]
+      }) }}
+    </div>
+    {% endif %}
+  </form>
+  </div>
+  <div id = 'palette' class="palette">
+    {# MHCLG is default selection #}
+    {% for colour, values in colours.MHCLG.light %}
+      <div class = "palette-cell">
+        <div class = "palette-preview" style="background-color: rgb({{values[0]}}, {{values[1]}}, {{values[2]}});"></div><span class = "palette-text">{{colour}}</span></div>
+    {% endfor %} 
+  </div>
+</div>
+{%endmacro%}

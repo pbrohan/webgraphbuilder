@@ -1,8 +1,9 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import terser from '@rollup/plugin-terser';
-import postcss from 'rollup-plugin-postcss';
+import replace from '@rollup/plugin-replace';
 import nodePolyfills from 'rollup-plugin-polyfill-node';
+import build_vars from './buildConfig.js';
 
 export default {
   input: 'src/index.js', // Entry point of your application
@@ -15,6 +16,10 @@ export default {
     resolve(), // Resolves node_modules imports
     commonjs(), // Converts CommonJS modules to ES6
     terser(), // Minifies the output
-    nodePolyfills()
+    nodePolyfills(),
+    replace({
+      preventAssignment: true,
+      '__urlPrefix__' : `${build_vars.urlprefix}`
+    })
   ],
 };
