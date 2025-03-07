@@ -23,7 +23,7 @@ export default {
       '__urlPrefix__' : `${build_vars.urlprefix}`
     }),
     sass({
-      output: 'src/stylesheets/main.css',
+      output: 'output/stylesheets/main.css',
       options: {
         data: `$base-url : "${build_vars.urlprefix}";`
       },
