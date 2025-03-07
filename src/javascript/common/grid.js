@@ -1,4 +1,4 @@
-import { Grid } from "/bundle.js";
+import Grid from 'tui-grid';
 
 let data_table = null;
 

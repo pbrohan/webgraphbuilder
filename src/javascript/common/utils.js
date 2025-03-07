@@ -1,4 +1,4 @@
-import { data_check } from "/bundle.js"
+import data_check from "../common/data_check"
 
 export function get_data_level(dataLookup, la_level) {
   // Check and see what kind of data we're looking at

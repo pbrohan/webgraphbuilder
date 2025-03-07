@@ -1,19 +1,20 @@
-import { add_grid, get_grid} from "../common/grid.js";
-import { set_palette} from "../common/palette.js";
+import { add_grid, get_grid} from "../common/grid";
+import { set_palette} from "../common/palette";
 import {
   mapSettings,
   dimensions,
   getMapDataAttributes,
   legendSettings,
-} from "./config.js";
-import { d3, colours} from "/bundle.js";
-import { add_spinner } from "../common/spinner.js";
-import { graph_tools } from "/bundle.js";
+} from "../maps/config";
+import * as d3 from 'd3';
+import colours from "../colours";
+import { add_spinner } from "../common/spinner";
+import graph_tools from "../common/graph_tools";
 import { map_choose_scale_function,
          match_geojson_to_datalookup,
          validate_rows,
          validate_data_level
-     } from "./common_maps.js";
+     } from "../maps/common_maps";
 const VerticalLegend = graph_tools.VerticalLegend;
 const download_svg = graph_tools.download_svg;
 

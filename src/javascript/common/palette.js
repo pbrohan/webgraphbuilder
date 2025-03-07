@@ -1,4 +1,4 @@
-import { colours } from "/bundle.js";
+import colours from "../colours";
 
 export function set_palette(el, build_graph) {
   var graph_colours = colours[el.value];

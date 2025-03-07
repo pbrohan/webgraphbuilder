@@ -1,7 +1,9 @@
-import { get_palette } from "../common/palette.js";
-import { d3, data_check, msgBox } from "/bundle.js";
-import { createTable } from "../common/errorbox.js";
-import { get_data_level } from "../common/utils.js";
+import { get_palette } from "../common/palette";
+import * as d3 from 'd3';
+import data_check from "../common/data_check";
+import msgBox from "../common/msgbox";
+import { createTable } from "../common/errorbox";
+import { get_data_level } from "../common/utils";
 import { get_table_range } from "../common/grid.js";
 const check_duplicate_rows = data_check.check_duplicate_rows;
 const DuplicateRow = data_check.DuplicateRow;

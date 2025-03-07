@@ -1,4 +1,4 @@
-import { set_palette } from "../common/palette.js";
+import { set_palette } from "../common/palette";
 
 export function initHomePage(){
   const org_list = document.getElementById("org_list");

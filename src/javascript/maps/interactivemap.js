@@ -1,13 +1,15 @@
-import { leaflet, colours, graph_tools} from "/bundle.js";
-import { resizeSVG} from "../common/utils.js"
-import { set_palette} from "../common/palette.js";
-import { add_grid, get_grid} from "../common/grid.js";
-import { createDataLookup } from "./maps.js";
-import { getMapDataAttributes} from "./config.js";
+import * as leaflet from 'leaflet';
+import colours from "../colours.js";
+import graph_tools from "../common/graph_tools";
+import { resizeSVG} from "../common/utils";
+import { set_palette} from "../common/palette";
+import { add_grid, get_grid} from "../common/grid";
+import { createDataLookup } from "../maps/maps";
+import { getMapDataAttributes} from "../maps/config";
 import { map_choose_scale_function,
          match_geojson_to_datalookup,
          validate_rows,
-         validate_data_level } from "./common_maps.js";
+         validate_data_level } from "../maps/common_maps";
 
 const VerticalLegend = graph_tools.VerticalLegend;
 
