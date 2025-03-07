@@ -1,3 +1,4 @@
+import "./sass/main.scss"; //Render sass
 import * as d3 from 'd3';
 import * as leaflet from 'leaflet';
 import Grid from 'tui-grid';

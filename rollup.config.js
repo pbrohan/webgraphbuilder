@@ -4,6 +4,7 @@ import terser from '@rollup/plugin-terser';
 import replace from '@rollup/plugin-replace';
 import nodePolyfills from 'rollup-plugin-polyfill-node';
 import build_vars from './buildConfig.js';
+import sass from 'rollup-plugin-sass';
 
 export default {
   input: 'src/index.js', // Entry point of your application
@@ -20,6 +21,12 @@ export default {
     replace({
       preventAssignment: true,
       '__urlPrefix__' : `${build_vars.urlprefix}`
+    }),
+    sass({
+      output: 'src/stylesheets/main.css',
+      options: {
+        data: `$base-url : "${build_vars.urlprefix}";`
+      },
     })
   ],
 };

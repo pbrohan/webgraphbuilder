@@ -5,6 +5,10 @@
 
 @use "../../node_modules/tui-grid/dist/tui-grid.css";
 
+.govuk-footer__copyright-logo {
+    background-image: url("#{$base-url}/assets/images/govuk-crest.svg");
+  }
+
 .settings-container{
     display: flex;
 }
