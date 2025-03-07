@@ -7,15 +7,15 @@ pagetitle: Home
 
 <div class = "govuk-grid-row">
     <div class = "govuk-grid-column-one-third">
-        <a href = "{{ '/map/' | url}}" class = "govuk-link">Maps</a>
+        <a href = "{{ urlPrefix }}/map/" class = "govuk-link">Maps</a>
     </div>
     <div class = "govuk-grid-column-one-third">
-        <a href = "{{ '/interactivemap/' | url}}" class = "govuk-link">Interactive Map</a>
+        <a href = "{{ urlPrefix }}/interactivemap/" class = "govuk-link">Interactive Map</a>
     </div>
 </div>
 
 <script type = "module">
-  import('/bundle.js').then(module => {
+  import('{{urlPrefix}}/bundle.js').then(module => {
     module.initHomePage()
   })
 </script>

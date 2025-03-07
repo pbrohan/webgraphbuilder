@@ -13,7 +13,7 @@ pagetitle: Map
 
 <p class = "govuk-body">This page makes printable and publishable static maps 
   of your data. To explore your data using an interactive (but not publication-ready)
-  interactive map, please go <a href = "{{'/interactivemap/' | url}}" class = "govuk-link">here</a>.
+  interactive map, please go <a href = "{{urlPrefix}}/interactivemap/" class = "govuk-link">here</a>.
 </p>
 
 <p class = "govuk-body">Click "Show table" to show the input table. Click on the table and paste your data into it. Your
@@ -40,7 +40,7 @@ expand to accommodate the number of rows you have.</p>
 <div id = 'map' class = 'graph-container'></div>
 
 <script type = "module">
-  import('/bundle.js').then(module => {
+  import('{{urlPrefix}}/bundle.js').then(module => {
     module.initMapPage()
   })
 </script>

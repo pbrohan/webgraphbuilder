@@ -1,4 +1,5 @@
 import nunjucks from "nunjucks";
+import build_vars from "./buildConfig.js";
 
 export default function (eleventyConfig) {
     // Set up a custom Nunjucks environment
@@ -13,11 +14,13 @@ export default function (eleventyConfig) {
     eleventyConfig.addPassthroughCopy("src/assets");
     eleventyConfig.addPassthroughCopy("src/stylesheets");
     eleventyConfig.addPassthroughCopy("src/javascripts");
+    eleventyConfig.addGlobalData("urlPrefix", build_vars.urlprefix);
 
     return{
         markdownTemplateEngine: "njk",
         htmlTemplateEngine: "njk",
         dataTemplateEngine: "njk",
+        pathPrefix: build_vars.urlprefix,
         dir: {
             input: "src",
             data: "_data",

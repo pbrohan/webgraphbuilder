@@ -9,7 +9,7 @@ pagetitle: Interactive Map
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
             integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
             crossorigin=""/>
-<p class = "govuk-body">For a printable/publishable map, please go <a href = "{{'/map/' | url}}" class = "govuk-link">here</a>.
+<p class = "govuk-body">For a printable/publishable map, please go <a href = "{{urlPrefix}}/map/" class = "govuk-link">here</a>.
 This page will make a quick interactive graph, but the output is not appropriate for wider sharing. If you would like a 
 custom map, you will need to make one using your programming language of choice.</p>
 
@@ -19,7 +19,7 @@ custom map, you will need to make one using your programming language of choice.
 <div id = "map" class = "interactive-map"></div>
 
 <script type = "module">
-  import('/bundle.js').then(module => {
+  import('{{urlPrefix}}/bundle.js').then(module => {
     module.initInteractiveMapPage()
   })
 </script>

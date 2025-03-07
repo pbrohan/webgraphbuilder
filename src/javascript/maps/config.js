@@ -23,7 +23,7 @@ export const interactiveLegendSettings = {
     width: 200
 }
 
-export const map_loc = "/assets/maps/"
+export const map_loc = "__urlPrefix__/assets/maps/" //replaced by rollup on build
 export const map_data = {
     "district" : {'2023': {"file": "LAD_2024.geojson",
                     "nameid": "LAD24NM",

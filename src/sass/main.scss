@@ -3,7 +3,7 @@
 );
 @use "./spinner.scss";
 
-@import url("https://uicdn.toast.com/grid/latest/tui-grid.css");
+@use "../../node_modules/tui-grid/dist/tui-grid.css";
 
 .settings-container{
     display: flex;
