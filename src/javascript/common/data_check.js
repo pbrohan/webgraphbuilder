@@ -88,7 +88,10 @@ function guess_region_type(data) {
 
 function guess_data_type(data) {
     // perform very simple data type guessing
-    const datacol = data.map(d => d.data.toString().toUpperCase());
+    const datacol = data.map(d => { if (d.data != null) {
+            return d.data.toString().toUpperCase()} 
+        else { 
+            return "" }});
     const nas = ["NA", "N/A", "N.A", "NAN", "-", "."];
     // how is there not a builtin for this?
     // Everything is text, int, float or NA. 
