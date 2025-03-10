@@ -1,5 +1,6 @@
 {% extends "govuk/template.njk" %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 
 
 {% set assetPath = urlPrefix + "/assets" %}
@@ -40,8 +41,19 @@ Peter's Graph Builder
       items: org_list
     }) }}
   </div>
+
 </header>
+<div class = "govuk-width-container">
+  {{ govukPhaseBanner({
+  tag: {
+    text: "Alpha"
+  },
+  html: 'This is a new service. Help us improve it and <a class="govuk-link" href="https://github.com/pbrohan/webgraphbuilder/issues">add any issues to the GitHub</a>.'
+}) }}
+</div>
 {% endblock %}
+
+
 
 {% block content %}
   <h1 class="govuk-heading-xl">{{ pagetitle }}</h1>
