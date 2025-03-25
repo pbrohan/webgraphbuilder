@@ -90,17 +90,18 @@ export function createDataLookup(data) {
 }
 
 function downloadAndProcessMapData(
-  file,
+  data_attr,
   path,
   dataLookup,
-  ecodeid,
-  nameid,
   scale,
   svg,
   inset,
   container
 ) {
   // Make loader to wait for map download
+  const file = data_attr.file;
+  const nameid = data_attr.nameid;
+  const ecodeid = data_attr.ecodeid;
   add_spinner(container);
   d3.json(file).then((map) => {
     const dataFeatures = match_geojson_to_datalookup(map, dataLookup, ecodeid)
@@ -116,10 +117,17 @@ function downloadAndProcessMapData(
     drawFeatures(dataFeatures, path, scale, svg, nameid, tooltip);
 
     if (inset.london) {
-      const londonFeatures = dataFeatures.filter((feature) => {
-        const ecode = feature.properties[ecodeid];
-        return ecode && ecode.startsWith("E090");
-      });
+      // If there's a list of specific london locations, use those, otherwise assume 
+      // London areas start E090
+      const londonFeatures = ('london' in data_attr)
+      ? dataFeatures.filter((feature) => {
+          const ecode = feature.properties[ecodeid];
+          return ecode && data_attr.london.includes(ecode);
+        })
+      : dataFeatures.filter((feature) => {
+          const ecode = feature.properties[ecodeid];
+          return ecode && ecode.startsWith("E090");
+        });
       addInset(
         londonFeatures,
         scale,
@@ -310,7 +318,7 @@ export function draw_map(
   if (data_level == -1) {
     return -1
   }
-  const { file, nameid, ecodeid } = getMapDataAttributes(data_level, data_year);
+  const data_attr = getMapDataAttributes(data_level, data_year);
 
   let scale = map_choose_scale_function(colour, colour_pair, data);
   if (scale == -1) {
@@ -319,11 +327,9 @@ export function draw_map(
   }
 
   downloadAndProcessMapData(
-    file,
+    data_attr,
     path,
     dataLookup,
-    ecodeid,
-    nameid,
     scale,
     svg,
     inset,
