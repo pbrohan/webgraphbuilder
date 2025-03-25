@@ -141,7 +141,12 @@ function downloadAndProcessMapData(
     }
 
     if (inset.shetland) {
-      const shetlandFeatures = dataFeatures.filter((feature) => {
+      const shetlandFeatures = ('shetland' in data_attr) ? 
+      dataFeatures.filter((feature) => {
+        const ecode = feature.properties[ecodeid];
+        return ecode && ecode.startsWith(data_attr.shetland);
+      })
+      : dataFeatures.filter((feature) => {
         const ecode = feature.properties[ecodeid];
         return ecode && ecode.startsWith("S12000027");
       });

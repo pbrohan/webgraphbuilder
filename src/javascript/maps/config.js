@@ -107,6 +107,7 @@ export const map_data = {
         "E14001576",
         "E14001586",
       ],
+      shetland: "S14000051"
     },
     2022: {
       file: "PCON_2022.geojson",
@@ -183,21 +184,24 @@ export const map_data = {
       "E14001032",
       "E14001036"]
     },
+    shetland: "S14000051"
   },
   district: {
-    2023: { file: "LAD_2024.geojson", nameid: "LAD24NM", ecodeid: "LAD24CD" },
-    2022: { file: "LAD_2024.geojson", nameid: "LAD24NM", ecodeid: "LAD24CD" },
+    2023: { file: "LAD_2024.geojson", nameid: "LAD24NM", ecodeid: "LAD24CD", shetland: "S12000027" },
+    2022: { file: "LAD_2024.geojson", nameid: "LAD24NM", ecodeid: "LAD24CD", shetland: "S12000027" },
   },
   county: {
     2023: {
       file: "CTY_2023.geojson",
       nameid: "CTYUA23NM",
       ecodeid: "CTYUA23CD",
+      shetland: "S12000027"
     },
     2022: {
       file: "CTY_2023.geojson",
       nameid: "CTYUA23NM",
       ecodeid: "CTYUA23CD",
+      shetland: "S12000027"
     },
   },
 };

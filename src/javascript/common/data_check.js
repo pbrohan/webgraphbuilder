@@ -128,7 +128,6 @@ function guess_region_type(data) {
     // Iterate over data to separate county and district ecodes.
     for (const d in data) {
         const datum = data[d];
-        console.log(d.slice(0,3));
         const prefix = d.slice(0,3);
         if (constituency_starts.includes(prefix)) {
             constituencies.push(datum.ecode)
