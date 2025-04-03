@@ -12,19 +12,57 @@ export function set_palette(el, build_graph) {
       );
     }
   }
-  // Doesn't currently change palette when new one is selected
-  const palette = [...document.querySelectorAll(".palette-cell")];
-  let set_selected = true;
-  palette.forEach((cell) => {
-    if (set_selected) {
-      cell.classList.add("palette-cell__selected");
-      set_selected = false;
+  
+  // Update palette display when department changes
+  const palette_container = document.getElementById("palette");
+  if (palette_container) {
+    // Clear existing palette cells
+    palette_container.innerHTML = "";
+    
+    // Create new palette cells based on the selected department
+    for (const [colour, values] of Object.entries(graph_colours.light)) {
+      const cell = document.createElement("div");
+      cell.classList.add("palette-cell");
+      
+      const preview = document.createElement("div");
+      preview.classList.add("palette-preview");
+      preview.style.backgroundColor = `rgb(${values[0]}, ${values[1]}, ${values[2]})`;
+      
+      const text = document.createElement("span");
+      text.classList.add("palette-text");
+      text.textContent = colour;
+      
+      cell.appendChild(preview);
+      cell.appendChild(text);
+      palette_container.appendChild(cell);
+      
+      // Add click event listener to each new cell
+      cell.addEventListener("click", (event) => {
+        select_palette_colour(event.currentTarget);
+        build_graph();
+      });
     }
-    cell.addEventListener("click", (event) => {
-      select_palette_colour(event.currentTarget);
-      build_graph();
+    
+    // Select the first palette color by default
+    const first_cell = palette_container.querySelector(".palette-cell");
+    if (first_cell) {
+      first_cell.classList.add("palette-cell__selected");
+    }
+  } else {
+    // For backwards compatibility, handle existing palette cells if container not found
+    const palette = [...document.querySelectorAll(".palette-cell")];
+    let set_selected = true;
+    palette.forEach((cell) => {
+      if (set_selected) {
+        cell.classList.add("palette-cell__selected");
+        set_selected = false;
+      }
+      cell.addEventListener("click", (event) => {
+        select_palette_colour(event.currentTarget);
+        build_graph();
+      });
     });
-  });
+  }
 }
 
 function select_palette_colour(el) {
