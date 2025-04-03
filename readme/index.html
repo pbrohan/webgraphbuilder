@@ -1,21 +1,86 @@
-<h1>Features to add</h1>
+<h1>WebGraphBuilder</h1>
+<p>WebGraphBuilder is a web-based tool for creating interactive and static choropleth maps of UK geographical data.</p>
+<h2>Purpose</h2>
 <ul>
-<li>[x] Table to insert data</li>
-<li>[x] Table appears/disappears</li>
-<li>[x] Button to generate graph</li>
-<li>[ ] Option to make interactive/static graph</li>
-<li>[x] Way of checking data for graph</li>
-<li>[x] When more complicated make JSON to find correct map</li>
-<li>[x] When the page changes (specifically when the map data level is changed by the parser, fire an event and tell the user)</li>
+<li>Create printable static maps for publication</li>
+<li>Generate interactive maps for data exploration</li>
+<li>Visualize data across different UK administrative boundaries:
+<ul>
+<li>Counties</li>
+<li>Local Authority Districts</li>
+<li>Parliamentary Constituencies</li>
 </ul>
-<p>All GeoJSON files are BUC (closest 200m) to save space (still big :())</p>
-<h1>How does the maps page decide what data you've entered?</h1>
+</li>
+</ul>
+<h2>Features</h2>
+<ul>
+<li>Automatic detection of geographic levels from area codes</li>
+<li>Data validation and error checking</li>
+<li>Color customization with different palettes</li>
+<li>Special insets for London and Shetland regions</li>
+<li>Support for both numerical and categorical data</li>
+<li>Export capabilities for created maps</li>
+<li>GOV.UK design system compliance</li>
+</ul>
+<h2>Setup Instructions</h2>
+<h3>Prerequisites</h3>
+<ul>
+<li>Node.js (v14+)</li>
+<li>npm</li>
+</ul>
+<h3>Installation</h3>
 <ol>
-<li><strong>Check the list of Ecodes for duplicates</strong> If there are any, throw an error</li>
-<li><strong>Check the list of Ecodes for districts or counties</strong> If both are found, throw an error. If one is found but the user has selected the other (e.g. if the ecode for a district is in the list but the user has selected &quot;Counties&quot;) select the correct option</li>
-<li><strong>Check the list of Ecodes against the list of correct Ecodes for the level</strong> If any non-blank rows contain an unrecognised Ecode, throw an error</li>
-<li><strong>Check the data column for numbers</strong> If every row is a number or blank, use a continuous scale, and render the graph, otherwise keep checking</li>
-<li><strong>Count the number of unique values</strong> If there are more than 7, throw an error</li>
-<li><strong>Check if the user has indicated that the values are ordered</strong> The order is assumed to be the order in which each unique value first appears. Set the palette to shades of the colour selected and render the graph. Otherwise</li>
-<li>Set the palette to the default palette for the selected department and render the graph.</li>
+<li>Clone the repository:</li>
 </ol>
+<pre><code class="language-bash">git clone https://github.com/pbrohan/webgraphbuilder.git
+cd webgraphbuilder
+</code></pre>
+<ol start="2">
+<li>Install dependencies:</li>
+</ol>
+<pre><code class="language-bash">npm install
+</code></pre>
+<ol start="3">
+<li>Start the development server:</li>
+</ol>
+<pre><code class="language-bash">npm run serve
+</code></pre>
+<ol start="4">
+<li>Visit <code>http://localhost:8080</code> in your browser</li>
+</ol>
+<h2>Usage Guide</h2>
+<ol>
+<li>Choose between Printable Map or Interactive Map on the home page</li>
+<li>Click &quot;Show table&quot; to display the input grid</li>
+<li>Enter data in the format:
+<ul>
+<li>Column 1: Area codes (E-codes, e.g., E10000003 for counties)</li>
+<li>Column 2: Values to be displayed on the map</li>
+</ul>
+</li>
+<li>Select map settings:
+<ul>
+<li>Geographic level (Counties, Districts, or Constituencies)</li>
+<li>Year of boundaries</li>
+<li>Color scheme</li>
+</ul>
+</li>
+<li>Toggle London or Shetland insets if needed</li>
+<li>Download the map using the &quot;Download Graph&quot; button</li>
+</ol>
+<h2>Technical Details</h2>
+<ul>
+<li>Built with JavaScript, using D3.js for static maps and Leaflet for interactive maps</li>
+<li>Uses Eleventy (11ty) as a static site generator</li>
+<li>SASS/SCSS for styling with GOV.UK Frontend components</li>
+<li>Data grid powered by Toast UI Grid</li>
+<li>Packaged with Rollup</li>
+</ul>
+<h2>Development Commands</h2>
+<ul>
+<li><code>npm run build</code>: Build for development</li>
+<li><code>npm run build:production</code>: Build for production</li>
+<li><code>npm run serve</code>: Start development server</li>
+<li><code>npm run watch:sass</code>: Watch and compile SASS changes</li>
+<li><code>npm run test</code>: Run tests</li>
+</ul>
