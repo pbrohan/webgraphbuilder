@@ -1,5 +1,22 @@
 import colours from "../colours";
 
+// Initialize org_list select dropdown with saved value from localStorage
+export function initOrgListSelect() {
+  const org_list = document.getElementById("org_list");
+  if (!org_list) return;
+  
+  // Load previously selected department from localStorage
+  const savedDepartment = localStorage.getItem('selectedDepartment');
+  if (savedDepartment && org_list.querySelector(`option[value="${savedDepartment}"]`)) {
+    org_list.value = savedDepartment;
+  }
+  
+  // Add change event listener to save selection
+  org_list.addEventListener("change", (event) => {
+    localStorage.setItem('selectedDepartment', event.target.value);
+  });
+}
+
 export function set_palette(el, build_graph) {
   var graph_colours = colours[el.value];
   // if palette is loaded successfuly, change the header tint to the correct
