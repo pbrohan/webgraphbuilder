@@ -166,7 +166,7 @@ div.graph-header > div.govuk-form-group {
     user-select: none;
 }
 
-.map-tooltip{
+.map-tooltip, .chart-tooltip {
     @extend .govuk-body-s;
     background-color: white;
     position: absolute;
@@ -175,6 +175,11 @@ div.graph-header > div.govuk-form-group {
     max-width: 300px;
     border: 2px solid black;
     opacity: 0;
+}
+
+// Additional styles for donut chart interactions
+.donut-segment:hover {
+    stroke-width: 3px;
 }
 
 .table-holder-details {

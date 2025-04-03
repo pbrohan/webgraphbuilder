@@ -108,31 +108,35 @@ function draw_donut_chart(container, width, height, data, departmentKey, colourS
     .attr("stroke-width", 1)
     .attr("class", "donut-segment");
   
-  // Add hover effect
+  // Split tooltip functions to match maps pattern
+  function segmentMouseover(event, d) {
+    tooltip.style.opacity = 1;
+    d3.select(event.target)
+      .transition()
+      .duration(200)
+      .attr("transform", `scale(1.05)`);
+  }
+  
+  function segmentMousemove(event, d) {
+    const percent = (d.data.value / total * 100).toFixed(1);
+    tooltip.innerHTML = `${d.data.label}: ${d.data.value} (${percent}%)`;
+    tooltip.style.left = (event.pageX + 15) + "px";
+    tooltip.style.top = event.pageY + "px";
+  }
+  
+  function segmentMouseleave(event, d) {
+    tooltip.style.opacity = 0;
+    d3.select(event.target)
+      .transition()
+      .duration(200)
+      .attr("transform", "scale(1)");
+  }
+  
+  // Add event listeners to segments
   segments
-    .on("mouseover", function(event, d) {
-      d3.select(this)
-        .transition()
-        .duration(200)
-        .attr("transform", `scale(1.05)`);
-        
-      // Show tooltip
-      const percent = (d.data.value / total * 100).toFixed(1);
-      tooltip
-        .html(`<strong>${d.data.label}</strong><br>${d.data.value} (${percent}%)`)
-        .style("opacity", 1)
-        .style("left", (event.pageX + 10) + "px")
-        .style("top", (event.pageY - 15) + "px");
-    })
-    .on("mouseout", function() {
-      d3.select(this)
-        .transition()
-        .duration(200)
-        .attr("transform", "scale(1)");
-        
-      // Hide tooltip
-      tooltip.style("opacity", 0);
-    });
+    .on("mouseover", segmentMouseover)
+    .on("mousemove", segmentMousemove)
+    .on("mouseleave", segmentMouseleave);
   
   // Add center text showing total
   g.append("text")
@@ -182,17 +186,10 @@ function draw_donut_chart(container, width, height, data, departmentKey, colourS
       return `${d.label} (${percent}%)`;
     });
   
-  // Add tooltip
+  // Add tooltip (using same class as maps)
   const tooltip = d3.select(container)
     .append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0)
-    .style("position", "absolute")
-    .style("background", "white")
-    .style("border", "1px solid #ddd")
-    .style("border-radius", "3px")
-    .style("padding", "10px")
-    .style("pointer-events", "none");
+    .attr("class", "chart-tooltip");
   
   // Append SVG to container
   container.append(svg.node());
