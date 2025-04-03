@@ -35,6 +35,34 @@ const mhclg = {
     }
 }
 
-const colours = {"MHCLG": mhclg}
+const analytical_function = {
+    primary: [18, 67, 109],
+    black: [0, 0, 0],
+    white: [255, 255, 255],
+    dark: {"blue": [18, 67, 109],
+           "turquoise": [40, 161, 151],
+           "pink": [128, 22, 80],
+           "orange": [244, 106, 37],
+           "grey": [61, 61, 61],
+           "purple": [162, 133, 209] 
+    },
+    light: {"blue": [18, 67, 109],
+           "turquoise": [40, 161, 151],
+           "pink": [128, 22, 80],
+           "orange": [244, 106, 37],
+           "grey": [61, 61, 61],
+           "purple": [162, 133, 209] 
+    },
+    pairs_light: {"blue": [244, 106, 37],
+           "turquoise": [128, 22, 80],
+           "pink": [40, 161, 151],
+           "orange": [18, 67, 109],
+           "grey": [255, 255, 255],
+           "purple": [61, 61, 61] 
+    }
+}
 
-export default colours
+const colours = {"Analytical Function": analytical_function,
+                "MHCLG": mhclg}
+
+export default colours 
