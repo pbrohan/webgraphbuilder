@@ -1,0 +1,236 @@
+import * as d3 from 'd3';
+import { add_grid, get_grid } from "../common/grid";
+import { set_palette } from "../common/palette";
+import colours from "../colours";
+import graph_tools from "../common/graph_tools";
+import msgBox from "../common/msgbox";
+
+const download_svg = graph_tools.download_svg;
+
+// Get current settings from the page
+function get_donut_chart_page_state() {
+  const data = get_grid().getData();
+  const org_list = document.getElementById("org_list");
+  const colourScheme = document.querySelector('input[name="colour-scheme"]:checked').value;
+  
+  return [data, org_list.value, colourScheme];
+}
+
+// Format data from grid for chart use
+function createDataObject(data) {
+  return data
+    .filter((line) =>
+      Object.values(line).some((value) =>
+        typeof value === "string" ? value.trim() !== "" : false
+      )
+    )
+    .map(line => ({
+      label: line.ecode.trim(),
+      value: parseFloat(line.data)
+    }))
+    .filter(item => !isNaN(item.value));
+}
+
+/**
+ * Draw a donut chart using D3
+ * @param {HTMLElement} container - Element to append the chart to
+ * @param {number} width - Width of the chart
+ * @param {number} height - Height of the chart
+ * @param {Array} data - Data array from the grid
+ * @param {string} departmentKey - Key for colour palette (e.g., "MHCLG")
+ * @param {string} colourScheme - "light" or "dark"
+ */
+function draw_donut_chart(container, width, height, data, departmentKey, colourScheme) {
+  // Clear container
+  container.innerHTML = "";
+  
+  // Process data
+  const chartData = createDataObject(data);
+  if (chartData.length === 0) {
+    msgBox.error("No valid data found. Please enter labels in the first column and numeric values in the second column.");
+    return -1;
+  }
+  
+  // Get department colours
+  const departmentColours = colours[departmentKey];
+  if (!departmentColours) {
+    msgBox.error(`No palette found for department: ${departmentKey}`);
+    return -1;
+  }
+  
+  // Create SVG element
+  const svg = d3.create("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("viewBox", [0, 0, width, height]);
+  
+  const margin = 40;
+  const chartWidth = width - margin * 2;
+  const chartHeight = height - margin * 2;
+  const radius = Math.min(chartWidth, chartHeight) / 2;
+  const innerRadius = radius * 0.6;
+  
+  // Create color palette
+  const colourValues = Object.values(departmentColours[colourScheme]);
+  const colorScale = d3.scaleOrdinal()
+    .domain(chartData.map(d => d.label))
+    .range(colourValues);
+  
+  // Create pie generator
+  const pie = d3.pie()
+    .sort(null)
+    .value(d => Math.abs(d.value)); // Use absolute value to handle negative numbers
+  
+  // Create arc generators
+  const arc = d3.arc()
+    .innerRadius(innerRadius)
+    .outerRadius(radius);
+  
+  const labelArc = d3.arc()
+    .innerRadius(radius * 0.8)
+    .outerRadius(radius * 0.8);
+  
+  // Center the chart
+  const g = svg.append("g")
+    .attr("transform", `translate(${width / 2},${height / 2})`);
+  
+  // Calculate total for center text
+  const total = chartData.reduce((sum, item) => sum + item.value, 0);
+  
+  // Add donut segments
+  const segments = g.selectAll("path")
+    .data(pie(chartData))
+    .enter()
+    .append("path")
+    .attr("d", arc)
+    .attr("fill", (d, i) => colorScale(d.data.label))
+    .attr("stroke", "white")
+    .attr("stroke-width", 1)
+    .attr("class", "donut-segment");
+  
+  // Add hover effect
+  segments
+    .on("mouseover", function(event, d) {
+      d3.select(this)
+        .transition()
+        .duration(200)
+        .attr("transform", `scale(1.05)`);
+        
+      // Show tooltip
+      const percent = (d.data.value / total * 100).toFixed(1);
+      tooltip
+        .html(`<strong>${d.data.label}</strong><br>${d.data.value} (${percent}%)`)
+        .style("opacity", 1)
+        .style("left", (event.pageX + 10) + "px")
+        .style("top", (event.pageY - 15) + "px");
+    })
+    .on("mouseout", function() {
+      d3.select(this)
+        .transition()
+        .duration(200)
+        .attr("transform", "scale(1)");
+        
+      // Hide tooltip
+      tooltip.style("opacity", 0);
+    });
+  
+  // Add center text showing total
+  g.append("text")
+    .attr("text-anchor", "middle")
+    .attr("dy", "-0.2em")
+    .attr("font-size", "16px")
+    .attr("font-weight", "bold")
+    .attr("font-family", "arial")
+    .attr("fill", "#0b0c0c")
+    .text("Total");
+    
+  g.append("text")
+    .attr("text-anchor", "middle")
+    .attr("dy", "1em")
+    .attr("font-size", "16px")
+    .attr("font-weight", "bold")
+    .attr("font-family", "arial")
+    .attr("fill", "#0b0c0c")
+    .text(total.toFixed(1));
+  
+  // Add legend
+  const legendItemSize = 15;
+  const legendSpacing = 5;
+  const legendHeight = legendItemSize + legendSpacing;
+  
+  const legend = svg.append("g")
+    .attr("transform", `translate(${width - margin - 100}, ${margin})`)
+    .selectAll(".legend-item")
+    .data(chartData)
+    .enter()
+    .append("g")
+    .attr("class", "legend-item")
+    .attr("transform", (d, i) => `translate(0, ${i * legendHeight})`);
+    
+  legend.append("rect")
+    .attr("width", legendItemSize)
+    .attr("height", legendItemSize)
+    .attr("fill", (d, i) => colorScale(d.label));
+    
+  legend.append("text")
+    .attr("x", legendItemSize + legendSpacing)
+    .attr("y", legendItemSize - 2)
+    .attr("font-size", "12px")
+    .attr("font-family", "arial")
+    .text(d => {
+      const percent = (d.value / total * 100).toFixed(1);
+      return `${d.label} (${percent}%)`;
+    });
+  
+  // Add tooltip
+  const tooltip = d3.select(container)
+    .append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0)
+    .style("position", "absolute")
+    .style("background", "white")
+    .style("border", "1px solid #ddd")
+    .style("border-radius", "3px")
+    .style("padding", "10px")
+    .style("pointer-events", "none");
+  
+  // Append SVG to container
+  container.append(svg.node());
+}
+
+// Update chart when data changes
+export function make_donut_chart_if_data(
+  width = 700,
+  height = 500
+) {
+  const state = get_donut_chart_page_state();
+  // If user has entered data in the table, draw the chart
+  if (state[0].length > 0) {
+    draw_donut_chart(document.getElementById("donut-chart"), width, height, ...state);
+  } else {
+    document.getElementById("donut-chart").innerHTML = "";
+  }
+}
+
+// Initialize the page
+export function initDonutChartPage() {
+  add_grid(document.getElementById("grid"), make_donut_chart_if_data);
+
+  const org_list = document.getElementById("org_list");
+  const donut_settings = document.getElementById("donut-settings");
+  
+  set_palette(org_list, make_donut_chart_if_data);
+  
+  org_list.addEventListener("change", (event) => {
+    set_palette(event.target, make_donut_chart_if_data);
+    make_donut_chart_if_data();
+  });
+  
+  donut_settings.addEventListener("change", (event) => {
+    make_donut_chart_if_data();
+  });
+  
+  document.getElementById("donut-dl").addEventListener("click", () => {
+    download_svg(document.querySelector("#donut-chart > svg"));
+  });
+}

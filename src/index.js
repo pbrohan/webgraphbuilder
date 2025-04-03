@@ -10,6 +10,7 @@ import colours from "./javascript/colours"
 import { initMapPage } from "./javascript/maps/maps"
 import { initInteractiveMapPage } from './javascript/maps/interactivemap';
 import { initHomePage } from './javascript/home/home';
+import { initDonutChartPage } from './javascript/donutchart/donutchart';
 import { initOrgListSelect } from './javascript/common/palette';
 
 // Custom initAll function that runs common initialization code
@@ -31,4 +32,5 @@ export {d3,
         leaflet,
         initMapPage,
         initInteractiveMapPage,
-        initHomePage};
+        initHomePage,
+        initDonutChartPage};
