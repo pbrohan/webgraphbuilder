@@ -9,6 +9,9 @@ export function initOrgListSelect() {
   const savedDepartment = localStorage.getItem('selectedDepartment');
   if (savedDepartment && org_list.querySelector(`option[value="${savedDepartment}"]`)) {
     org_list.value = savedDepartment;
+    
+    // Apply the header color for the selected department
+    updateHeaderColor(org_list);
   }
   
   // Add change event listener to save selection
@@ -17,18 +20,25 @@ export function initOrgListSelect() {
   });
 }
 
-export function set_palette(el, build_graph) {
-  var graph_colours = colours[el.value];
-  // if palette is loaded successfuly, change the header tint to the correct
-  // colour
-  if (graph_colours) {
-    if (graph_colours) {
-      document.querySelector(".graph-header").style.setProperty(
+// Update header color based on the selected department
+function updateHeaderColor(el) {
+  const graph_colours = colours[el.value];
+  if (graph_colours && graph_colours.primary) {
+    const header = document.querySelector(".graph-header");
+    if (header) {
+      header.style.setProperty(
         "border-bottom",
-        "10px solid rgb(" + graph_colours.primary + ")" // Javascript is awful
+        "10px solid rgb(" + graph_colours.primary + ")"
       );
     }
   }
+}
+
+export function set_palette(el, build_graph) {
+  var graph_colours = colours[el.value];
+  
+  // Update header color
+  updateHeaderColor(el);
   
   // Update palette display when department changes
   const palette_container = document.getElementById("palette");
