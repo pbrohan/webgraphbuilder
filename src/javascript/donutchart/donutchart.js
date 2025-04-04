@@ -6,6 +6,7 @@ import graph_tools from "../common/graph_tools";
 import msgBox from "../common/msgbox";
 
 const download_svg = graph_tools.download_svg;
+const verticalLegend = graph_tools.verticalLegend;
 
 // Get current settings from the page
 function get_donut_chart_page_state() {
@@ -51,6 +52,14 @@ function draw_donut_chart(container, width, height, data, departmentKey, colourS
     return -1;
   }
   
+  // Check for negative values
+  const negativeValues = chartData.filter(item => item.value < 0);
+  if (negativeValues.length > 0) {
+    const valuesList = negativeValues.map(item => `${item.label}: ${item.value}`).join(', ');
+    msgBox.error(`Negative values are not allowed in donut charts. Please use positive values only. Found: ${valuesList}`);
+    return -1;
+  }
+  
   // Get department colours
   const departmentColours = colours[departmentKey];
   if (!departmentColours) {
@@ -79,7 +88,7 @@ function draw_donut_chart(container, width, height, data, departmentKey, colourS
   // Create pie generator
   const pie = d3.pie()
     .sort(null)
-    .value(d => Math.abs(d.value)); // Use absolute value to handle negative numbers
+    .value(d => d.value);
   
   // Create arc generators
   const arc = d3.arc()
@@ -157,34 +166,32 @@ function draw_donut_chart(container, width, height, data, departmentKey, colourS
     .attr("fill", "#0b0c0c")
     .text(total.toFixed(1));
   
-  // Add legend
-  const legendItemSize = 15;
-  const legendSpacing = 5;
-  const legendHeight = legendItemSize + legendSpacing;
+  // Add legend using the verticalLegend component
+  const legendSettings = {
+    title: "Values",
+    width: 120,
+    height: 200,
+    marginTop: 10,
+    marginRight: 30,
+    marginBottom: 10,
+    marginLeft: 10
+  };
   
-  const legend = svg.append("g")
-    .attr("transform", `translate(${width - margin - 100}, ${margin})`)
-    .selectAll(".legend-item")
-    .data(chartData)
-    .enter()
-    .append("g")
-    .attr("class", "legend-item")
-    .attr("transform", (d, i) => `translate(0, ${i * legendHeight})`);
-    
-  legend.append("rect")
-    .attr("width", legendItemSize)
-    .attr("height", legendItemSize)
-    .attr("fill", (d, i) => colorScale(d.label));
-    
-  legend.append("text")
-    .attr("x", legendItemSize + legendSpacing)
-    .attr("y", legendItemSize - 2)
-    .attr("font-size", "12px")
-    .attr("font-family", "arial")
-    .text(d => {
-      const percent = (d.value / total * 100).toFixed(1);
-      return `${d.label} (${percent}%)`;
-    });
+  // Create a D3 scale for the legend
+  const legendScale = d3.scaleOrdinal()
+    .domain(chartData.map(d => `${d.label} (${(d.value / total * 100).toFixed(1)}%)`))
+    .range(chartData.map(d => colorScale(d.label)));
+  
+  // Append the legend
+  svg.append("g")
+    .attr("transform", `translate(${width - legendSettings.width - 20}, ${margin})`)
+    .append(() => verticalLegend(legendScale, legendSettings))
+    .call(g => g
+      .selectAll(".tick text")
+      .style("font-size", "0.8rem")
+      .attr("color", "#0b0c0c")
+      .attr("font-family", "arial")
+    );
   
   // Add tooltip (using same class as maps)
   const tooltip = d3.select(container)
