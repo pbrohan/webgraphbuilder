@@ -6,7 +6,7 @@ import graph_tools from "../common/graph_tools";
 import msgBox from "../common/msgbox";
 
 const download_svg = graph_tools.download_svg;
-const verticalLegend = graph_tools.verticalLegend;
+const verticalLegend = graph_tools.VerticalLegend;
 
 // Get current settings from the page
 function get_donut_chart_page_state() {
@@ -26,7 +26,7 @@ function createDataObject(data) {
       )
     )
     .map(line => ({
-      label: line.ecode.trim(),
+      label: line.label.trim(),
       value: parseFloat(line.data)
     }))
     .filter(item => !isNaN(item.value));
@@ -81,9 +81,12 @@ function draw_donut_chart(container, width, height, data, departmentKey, colourS
   
   // Create color palette
   const colourValues = Object.values(departmentColours[colourScheme]);
-  const colorScale = d3.scaleOrdinal()
-    .domain(chartData.map(d => d.label))
-    .range(colourValues);
+  const colourScale = d3.scaleOrdinal(
+    chartData.map(d => d.label),
+    colourValues.map(d => `rgb(${d.join(",")})`)
+  )
+    //.domain(chartData.map(d => d.label))
+    //.range(colourValues.map(d => `rgb(${d.join(",")})`));
   
   // Create pie generator
   const pie = d3.pie()
@@ -112,7 +115,7 @@ function draw_donut_chart(container, width, height, data, departmentKey, colourS
     .enter()
     .append("path")
     .attr("d", arc)
-    .attr("fill", (d, i) => colorScale(d.data.label))
+    .attr("fill", (d, i) => colourScale(d.data.label))
     .attr("stroke", "white")
     .attr("stroke-width", 1)
     .attr("class", "donut-segment");
@@ -169,23 +172,20 @@ function draw_donut_chart(container, width, height, data, departmentKey, colourS
   // Add legend using the verticalLegend component
   const legendSettings = {
     title: "Values",
-    width: 120,
-    height: 200,
+    width: 60,
+    height: 120,
     marginTop: 10,
     marginRight: 30,
     marginBottom: 10,
     marginLeft: 10
   };
-  
-  // Create a D3 scale for the legend
-  const legendScale = d3.scaleOrdinal()
-    .domain(chartData.map(d => `${d.label} (${(d.value / total * 100).toFixed(1)}%)`))
-    .range(chartData.map(d => colorScale(d.label)));
-  
+
+
+
   // Append the legend
   svg.append("g")
     .attr("transform", `translate(${width - legendSettings.width - 20}, ${margin})`)
-    .append(() => verticalLegend(legendScale, legendSettings))
+    .append(() => verticalLegend(colourScale, legendSettings))
     .call(g => g
       .selectAll(".tick text")
       .style("font-size", "0.8rem")
@@ -218,7 +218,18 @@ export function make_donut_chart_if_data(
 
 // Initialize the page
 export function initDonutChartPage() {
-  add_grid(document.getElementById("grid"), make_donut_chart_if_data);
+  add_grid(document.getElementById("grid"), make_donut_chart_if_data,
+[
+  {
+    header: "Label",
+    name: "label",
+    editor: "text"
+  },
+  {header: "Value",
+    name: "data",
+    editor: "text"
+  }
+]);
 
   const org_list = document.getElementById("org_list");
   const donut_settings = document.getElementById("donut-settings");
