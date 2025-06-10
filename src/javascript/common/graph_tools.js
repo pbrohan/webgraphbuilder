@@ -155,6 +155,24 @@ function download_svg(element) {
     const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
     const svgUrl = URL.createObjectURL(svgBlob);
 
+    // Create a download link
+    const link = document.createElement("a");
+    link.href = svgUrl;
+    link.download = "graph.svg";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Revoke the object URL
+    URL.revokeObjectURL(svgUrl);
+}
+
+function download_jpg(element) {
+    // Convert the element to a data URL
+    const svgData = new XMLSerializer().serializeToString(element);
+    const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+    const svgUrl = URL.createObjectURL(svgBlob);
+
     const targetDPI = 300;
     const inchtopx = 96;
     const scaleFactor = targetDPI / inchtopx;
@@ -196,7 +214,8 @@ function download_svg(element) {
 
 const graph_tools = {
     VerticalLegend,
-    download_svg
+    download_svg,
+    download_jpg
 };
 
 export default graph_tools;

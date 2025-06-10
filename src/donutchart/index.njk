@@ -1,0 +1,65 @@
+---
+layout: govuk.njk
+servicetitle: Peter's Graph Builder
+pagetitle: Pie/Donut Chart
+---
+{% from "grid.njk" import inputgrid %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes%}
+
+<h3> Instructions </h3>
+
+<p class="govuk-body">This page creates pie or donut charts from your data using sequential colours from your chosen department palette.</p>
+
+<p class="govuk-body">Click "Show table" to show the input table. Click on the table and paste your data into it. Your
+data should consist of one column with labels and one column with values. The table will automatically 
+expand to accommodate the number of rows you have.</p>
+
+{{ inputgrid() }}
+
+<div id="settings-pane">
+  <div class="settings-container">
+    <form id="donut-settings">
+        {{ govukRadios({
+          name: "donut-style",
+          items: [
+          {
+            value: "donut",
+            text: "Donut",
+            checked: "checked"
+          },
+          {
+            value: "pie",
+            text: "Pie"
+          }
+          ]
+        })}}
+        <div id = 'percentages-checkbox' class = "settings-checkbox">
+        {{ govukCheckboxes({
+          name: "use-percentages",
+          items: [
+          {
+            value: "percs",
+            text: "Use Percentages in Labels"
+          }]
+        })}}
+        </div>
+    </form>
+  </div>
+</div>
+
+{{ govukButton({
+  id: "donut-dl",
+  text: "Download Chart",
+  preventDoubleClick: true
+}) }}
+
+<div id="donut-chart" class="graph-container"></div>
+
+<script type="module">
+  import('{{urlPrefix}}/bundle.js').then(module => {
+    module.initDonutChartPage()
+  })
+</script>
