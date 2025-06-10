@@ -8,6 +8,7 @@ const mhclg = {
     primary: [0, 98, 94],
     black: [0, 0, 0],
     white: [255, 255, 255],
+    grey: [153, 152, 143],
     dark: {pink: [147, 42, 114],
            red: [133, 41, 42],
            orange: [191, 74, 29],
@@ -40,6 +41,7 @@ const mhclg_new = {
        primary: [0, 80, 74],
        black: [0, 0, 0],
        white: [255, 255, 255],
+       grey: [148, 147, 137],
        dark: {"New Teal": [0, 80, 74],
               "Light Teal": [69, 161, 153],
               "Indigo": [51, 51, 102],
@@ -53,6 +55,14 @@ const mhclg_new = {
               "Bright Indigo": [134, 135, 193],
               "Red": [128, 0, 0,],
               "Pink": [238, 88, 98]
+       },
+       pairs_light: {
+              "New Teal": [147, 0, 58],
+              "Light Teal": [0, 0, 0],
+              "Indigo": [238, 88, 98],
+              "Bright Indigo": [128, 0, 0],
+              "Red": [134, 135, 193],
+              "Pink": [0, 0, 0]
        }
 }
 
@@ -60,6 +70,7 @@ const analytical_function = {
     primary: [18, 67, 109],
     black: [0, 0, 0],
     white: [255, 255, 255],
+    grey: [61, 61, 61],
     dark: {"blue": [18, 67, 109],
            "turquoise": [40, 161, 151],
            "pink": [128, 22, 80],
