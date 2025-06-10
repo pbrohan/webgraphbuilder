@@ -33,6 +33,27 @@ const mhclg = {
                   grey: [0, 0, 0]
 
     }
+    
+}
+
+const mhclg_new = {
+       primary: [0, 80, 74],
+       black: [0, 0, 0],
+       white: [255, 255, 255],
+       dark: {"New Teal": [0, 80, 74],
+              "Light Teal": [69, 161, 153],
+              "Indigo": [51, 51, 102],
+              "Bright Indigo": [134, 135, 193],
+              "Red": [128, 0, 0,],
+              "Pink": [238, 88, 98]
+       },
+       light: {"New Teal": [0, 80, 74],
+              "Light Teal": [69, 161, 153],
+              "Indigo": [51, 51, 102],
+              "Bright Indigo": [134, 135, 193],
+              "Red": [128, 0, 0,],
+              "Pink": [238, 88, 98]
+       }
 }
 
 const analytical_function = {
@@ -63,6 +84,7 @@ const analytical_function = {
 }
 
 const colours = {"Analytical Function": analytical_function,
-                "MHCLG": mhclg}
+                "MHCLG": mhclg,
+                "MHCLG New": mhclg_new}
 
 export default colours 
