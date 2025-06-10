@@ -33,8 +33,58 @@ const mhclg = {
                   grey: [0, 0, 0]
 
     }
+    
 }
 
-const colours = {"MHCLG": mhclg}
+const mhclg_new = {
+       primary: [0, 80, 74],
+       black: [0, 0, 0],
+       white: [255, 255, 255],
+       dark: {"New Teal": [0, 80, 74],
+              "Light Teal": [69, 161, 153],
+              "Indigo": [51, 51, 102],
+              "Bright Indigo": [134, 135, 193],
+              "Red": [128, 0, 0,],
+              "Pink": [238, 88, 98]
+       },
+       light: {"New Teal": [0, 80, 74],
+              "Light Teal": [69, 161, 153],
+              "Indigo": [51, 51, 102],
+              "Bright Indigo": [134, 135, 193],
+              "Red": [128, 0, 0,],
+              "Pink": [238, 88, 98]
+       }
+}
 
-export default colours
+const analytical_function = {
+    primary: [18, 67, 109],
+    black: [0, 0, 0],
+    white: [255, 255, 255],
+    dark: {"blue": [18, 67, 109],
+           "turquoise": [40, 161, 151],
+           "pink": [128, 22, 80],
+           "orange": [244, 106, 37],
+           "grey": [61, 61, 61],
+           "purple": [162, 133, 209] 
+    },
+    light: {"blue": [18, 67, 109],
+           "turquoise": [40, 161, 151],
+           "pink": [128, 22, 80],
+           "orange": [244, 106, 37],
+           "grey": [61, 61, 61],
+           "purple": [162, 133, 209] 
+    },
+    pairs_light: {"blue": [244, 106, 37],
+           "turquoise": [128, 22, 80],
+           "pink": [40, 161, 151],
+           "orange": [18, 67, 109],
+           "grey": [255, 255, 255],
+           "purple": [61, 61, 61] 
+    }
+}
+
+const colours = {"Analytical Function": analytical_function,
+                "MHCLG": mhclg,
+                "MHCLG New": mhclg_new}
+
+export default colours 

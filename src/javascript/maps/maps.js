@@ -375,7 +375,18 @@ export function make_map_if_data(
 }
 
 export function initMapPage() {
-  add_grid(document.getElementById("grid"), make_map_if_data);
+  add_grid(document.getElementById("grid"), make_map_if_data, [
+    {
+      header: "Ecode",
+      name: "ecode",
+      editor: "text",
+    },
+    {
+      header: "Data",
+      name: "data",
+      editor: "text",
+    },
+  ]);
 
   const map_settings = document.getElementById("map-settings");
   const org_list = document.getElementById("org_list");

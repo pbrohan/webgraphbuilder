@@ -189,7 +189,18 @@ export function initInteractiveMapPage() {
         make_interactive_map_if_data(map)
     })
 
-    add_grid(document.getElementById('grid'), curry_interactive_map)
+    add_grid(document.getElementById('grid'), curry_interactive_map,[
+        {
+          header: "Ecode",
+          name: "ecode",
+          editor: "text",
+        },
+        {
+          header: "Data",
+          name: "data",
+          editor: "text",
+        },
+      ])
 
     // Make map
     const map = leaflet.map('map').setView([53.422, -1.8], 6);

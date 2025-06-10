@@ -12,7 +12,7 @@ export default function (eleventyConfig) {
 
     eleventyConfig.setLibrary("njk", env);
     eleventyConfig.addPassthroughCopy("src/assets");
-    eleventyConfig.addPassthroughCopy("src/stylesheets");
+    eleventyConfig.addPassthroughCopy("output/stylesheets");
     eleventyConfig.addPassthroughCopy("src/javascripts");
     eleventyConfig.addGlobalData("urlPrefix", build_vars.urlprefix);
 
