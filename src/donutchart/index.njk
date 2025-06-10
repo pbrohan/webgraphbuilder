@@ -1,16 +1,17 @@
 ---
 layout: govuk.njk
 servicetitle: Peter's Graph Builder
-pagetitle: Donut Chart
+pagetitle: Pie/Donut Chart
 ---
 {% from "grid.njk" import inputgrid %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes%}
 
 <h3> Instructions </h3>
 
-<p class="govuk-body">This page creates donut charts from your data using sequential colours from your chosen department palette.</p>
+<p class="govuk-body">This page creates pie or donut charts from your data using sequential colours from your chosen department palette.</p>
 
 <p class="govuk-body">Click "Show table" to show the input table. Click on the table and paste your data into it. Your
 data should consist of one column with labels and one column with values. The table will automatically 
@@ -21,29 +22,30 @@ expand to accommodate the number of rows you have.</p>
 <div id="settings-pane">
   <div class="settings-container">
     <form id="donut-settings">
-      <div class="govuk-form-group">
         {{ govukRadios({
-          idPrefix: "colour-scheme",
-          name: "colour-scheme",
-          fieldset: {
-            legend: {
-              text: "Colour scheme",
-              classes: "govuk-fieldset__legend--s"
-            }
-          },
+          name: "donut-style",
           items: [
-            {
-              value: "light",
-              text: "Light colours",
-              checked: true
-            },
-            {
-              value: "dark",
-              text: "Dark colours"
-            }
+          {
+            value: "donut",
+            text: "Donut",
+            checked: "checked"
+          },
+          {
+            value: "pie",
+            text: "Pie"
+          }
           ]
-        }) }}
-      </div>
+        })}}
+        <div id = 'percentages-checkbox' class = "settings-checkbox">
+        {{ govukCheckboxes({
+          name: "use-percentages",
+          items: [
+          {
+            value: "percs",
+            text: "Use Percentages in Labels"
+          }]
+        })}}
+        </div>
     </form>
   </div>
 </div>
