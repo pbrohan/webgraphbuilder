@@ -581,7 +581,7 @@
   }
 }
 
-.govuk-body-s, .map-tooltip {
+.govuk-body-s, .map-tooltip, .chart-tooltip {
   color: #0b0c0c;
   font-family: arial;
   -webkit-font-smoothing: antialiased;
@@ -593,29 +593,29 @@
   margin-bottom: 15px;
 }
 @media print {
-  .govuk-body-s, .map-tooltip {
+  .govuk-body-s, .map-tooltip, .chart-tooltip {
     color: #000000;
   }
 }
 @media print {
-  .govuk-body-s, .map-tooltip {
+  .govuk-body-s, .map-tooltip, .chart-tooltip {
     font-family: sans-serif;
   }
 }
 @media (min-width: 40.0625em) {
-  .govuk-body-s, .map-tooltip {
+  .govuk-body-s, .map-tooltip, .chart-tooltip {
     font-size: 1rem;
     line-height: 1.25;
   }
 }
 @media print {
-  .govuk-body-s, .map-tooltip {
+  .govuk-body-s, .map-tooltip, .chart-tooltip {
     font-size: 14pt;
     line-height: 1.2;
   }
 }
 @media (min-width: 40.0625em) {
-  .govuk-body-s, .map-tooltip {
+  .govuk-body-s, .map-tooltip, .chart-tooltip {
     margin-bottom: 20px;
   }
 }
@@ -671,6 +671,7 @@
 .govuk-body-m + .govuk-heading-l, .govuk-body + .govuk-heading-l, .palette-cell + .govuk-heading-l, .table-holder + .govuk-heading-l,
 .govuk-body-s + .govuk-heading-l,
 .map-tooltip + .govuk-heading-l,
+.chart-tooltip + .govuk-heading-l,
 .govuk-list + .govuk-heading-l {
   padding-top: 15px;
 }
@@ -678,6 +679,7 @@
   .govuk-body-m + .govuk-heading-l, .govuk-body + .govuk-heading-l, .palette-cell + .govuk-heading-l, .table-holder + .govuk-heading-l,
   .govuk-body-s + .govuk-heading-l,
   .map-tooltip + .govuk-heading-l,
+  .chart-tooltip + .govuk-heading-l,
   .govuk-list + .govuk-heading-l {
     padding-top: 20px;
   }
@@ -686,6 +688,7 @@
 .govuk-body-m + .govuk-heading-m, .govuk-body + .govuk-heading-m, .palette-cell + .govuk-heading-m, .table-holder + .govuk-heading-m,
 .govuk-body-s + .govuk-heading-m,
 .map-tooltip + .govuk-heading-m,
+.chart-tooltip + .govuk-heading-m,
 .govuk-list + .govuk-heading-m,
 .govuk-body-m + .govuk-heading-s,
 .govuk-body + .govuk-heading-s,
@@ -693,6 +696,7 @@
 .table-holder + .govuk-heading-s,
 .govuk-body-s + .govuk-heading-s,
 .map-tooltip + .govuk-heading-s,
+.chart-tooltip + .govuk-heading-s,
 .govuk-list + .govuk-heading-s {
   padding-top: 5px;
 }
@@ -700,6 +704,7 @@
   .govuk-body-m + .govuk-heading-m, .govuk-body + .govuk-heading-m, .palette-cell + .govuk-heading-m, .table-holder + .govuk-heading-m,
   .govuk-body-s + .govuk-heading-m,
   .map-tooltip + .govuk-heading-m,
+  .chart-tooltip + .govuk-heading-m,
   .govuk-list + .govuk-heading-m,
   .govuk-body-m + .govuk-heading-s,
   .govuk-body + .govuk-heading-s,
@@ -707,6 +712,7 @@
   .table-holder + .govuk-heading-s,
   .govuk-body-s + .govuk-heading-s,
   .map-tooltip + .govuk-heading-s,
+  .chart-tooltip + .govuk-heading-s,
   .govuk-list + .govuk-heading-s {
     padding-top: 10px;
   }
@@ -9222,7 +9228,7 @@ div.graph-header > div.govuk-form-group {
   user-select: none;
 }
 
-.map-tooltip {
+.map-tooltip, .chart-tooltip {
   background-color: white;
   position: absolute;
   z-index: 30;
@@ -9230,6 +9236,10 @@ div.graph-header > div.govuk-form-group {
   max-width: 300px;
   border: 2px solid black;
   opacity: 0;
+}
+
+.donut-segment:hover {
+  stroke-width: 3px;
 }
 
 .table-holder-details {
