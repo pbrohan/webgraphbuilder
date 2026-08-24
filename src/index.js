@@ -12,7 +12,7 @@ import { initInteractiveMapPage } from './javascript/maps/interactivemap';
 import { initHomePage } from './javascript/home/home';
 import { initDonutChartPage } from './javascript/donutchart/donutchart';
 import { initOrgListSelect } from './javascript/common/palette';
-import { initLineGraphPage } from "./javascript/linechart/linechart";
+
 
 // Custom initAll function that runs common initialization code
 function initAll() {
@@ -34,5 +34,4 @@ export {d3,
         initMapPage,
         initInteractiveMapPage,
         initHomePage,
-        initDonutChartPage,
-        initLineGraphPage};
+        initDonutChartPage};
