@@ -204,7 +204,7 @@ export function initInteractiveMapPage() {
 
     // Make map
     const map = leaflet.map('map').setView([53.422, -1.8], 6);
-    var tiles = leaflet.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    var tiles = leaflet.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=cb1_5f9x_1_9e440195462b70c0e484c0d2', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
         maxZoom: 20
